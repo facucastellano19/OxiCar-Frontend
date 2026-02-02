@@ -1,17 +1,27 @@
-// src/store/user.store.ts
 import { create } from 'zustand';
-import type { UserInfo, User } from '../models/user.model';
+import type { UserInfo } from '../models/user.model';
+import { persist } from 'zustand/middleware';
 
 interface UserState {
-  user: User | null;
+  isLogged: boolean; 
   token: string | null;
   setUserInfo: (data: UserInfo) => void;
   resetUser: () => void;
 }
 
-export const useUserStore = create<UserState>((set) => ({
-  user: null,
-  token: null,
-  setUserInfo: (data) => set({ user: data.user, token: data.token }),
-  resetUser: () => set({ user: null, token: null }),
-}));
+export const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      isLogged: false,
+      token: null,
+      setUserInfo: (data) => set({ isLogged: data.login, token: data.token }),
+      resetUser: () => {
+        set({ isLogged: false, token: null });
+        localStorage.removeItem('user-storage'); 
+      },
+    }),
+    {
+      name: 'user-storage', 
+    }
+  )
+);

@@ -5,6 +5,6 @@ export interface User {
 }
 
 export interface UserInfo {
-  user: User;
+  login: boolean;
   token: string;
 }
