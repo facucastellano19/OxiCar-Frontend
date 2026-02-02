@@ -3,5 +3,12 @@ export const PublicRoutes = {
 }
 
 export const PrivateRoutes = {
-    HOME: 'home'
+    HOME: 'home',
+    CLIENTS: 'clients',
+    SERVICES: 'services',
+    PRODUCTS: 'products',
+    SALES: 'sales',
+    METRICS: 'metrics',
+    EMPLOYEES: 'employees',
+    AUDITORY: 'auditory',
 }

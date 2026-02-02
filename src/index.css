@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* Definimos tus colores usando variables de CSS modernas */
 @theme {
   --color-lavender: #eae8ff;
   --color-alabaster: #d8d5db;
@@ -9,7 +8,6 @@
   --color-icy-blue: #b0d7ff;
 }
 
-/* Opcional: Para que el fondo sea siempre oscuro */
 body {
   background-color: var(--color-jet-black);
   color: var(--color-lavender);

@@ -3,21 +3,22 @@ import { PrivateRoutes, PublicRoutes } from "../models"
 import { AuthGuard } from "../guards/auth.guards"
 import { Home } from "../pages/Home/Home"
 import { Login } from "../pages/Login/Login"
+import { MainLayout } from "../components/"
 
 export const AppRouter = () => {
     return (
         <Routes>
-            {/* Agregamos el "/" antes de las constantes para forzar rutas absolutas al navegar */}
             <Route path="/" element={<Navigate to={`/${PrivateRoutes.HOME}`} />} />
-            
             <Route path={PublicRoutes.LOGIN} element={<Login />} />
 
-            <Route element={<AuthGuard />}>
-                <Route path={PrivateRoutes.HOME} element={<Home />} />
-            </Route>
+  <Route element={<AuthGuard />}>
+    <Route element={<MainLayout />}>
+      <Route path={PrivateRoutes.HOME} element={<Home />} />
+      
+    </Route>
+  </Route>
 
-            {/* Si se pierde, lo mandamos al login de forma absoluta */}
-            <Route path="*" element={<Navigate to={`/${PublicRoutes.LOGIN}`} />} />      
+  <Route path="*" element={<h1>Página no encontrada</h1>} />
         </Routes>
     )
 }
