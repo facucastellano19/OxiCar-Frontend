@@ -1,12 +1,12 @@
 import { useState, Fragment } from "react";
-import { 
-  Search, 
-  Edit2, 
-  Trash2, 
-  UserPlus, 
-  History, 
-  Car, 
-  ChevronDown, 
+import {
+  Search,
+  Edit2,
+  Trash2,
+  UserPlus,
+  History,
+  Car,
+  ChevronDown,
   ChevronUp,
 } from "lucide-react";
 import { ClientForm } from "./Components/ClientForm";
@@ -14,25 +14,37 @@ import type { ClientForm as ClientFormType } from "../../models/clients.model";
 
 // Mock de datos basado en tu estructura de SQL
 const MOCK_CLIENTS = [
-  { 
-    id: 1, 
-    first_name: "Geronimo", 
-    last_name: "NC", 
-    email: "gero@ncdetailing.com", 
-    phone: "11 2233 4455", 
+  {
+    id: 1,
+    first_name: "Geronimo",
+    last_name: "NC",
+    email: "gero@ncdetailing.com",
+    phone: "11 2233 4455",
     vehicles: [
-      { brand: "VW", model: "Golf GTI", license_plate: "AF123JK", color: "Negro", year: 2022 },
-      { brand: "Audi", model: "A3", license_plate: "AD444RR", color: "Gris", year: 2021 }
-    ] 
+      {
+        brand: "VW",
+        model: "Golf GTI",
+        license_plate: "AF123JK",
+        color: "Negro",
+        year: 2022,
+      },
+      {
+        brand: "Audi",
+        model: "A3",
+        license_plate: "AD444RR",
+        color: "Gris",
+        year: 2021,
+      },
+    ],
   },
-  { 
-    id: 2, 
-    first_name: "Juan", 
-    last_name: "Pérez", 
-    email: "juan@perez.com", 
-    phone: "11 9988 7766", 
-    vehicles: [] 
-  }
+  {
+    id: 2,
+    first_name: "Juan",
+    last_name: "Pérez",
+    email: "juan@perez.com",
+    phone: "11 9988 7766",
+    vehicles: [],
+  },
 ];
 
 const Clients = () => {
@@ -44,13 +56,15 @@ const Clients = () => {
   };
 
   const handleCreateClient = (data: ClientFormType) => {
-    console.log("Datos listos para enviar al backend (Tablas clients y vehicles):", data);
+    console.log(
+      "Datos listos para enviar al backend (Tablas clients y vehicles):",
+      data,
+    );
     setIsModalOpen(false);
   };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      {/* HEADER */}
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-2xl font-bold text-lavender tracking-tight uppercase italic font-black">
@@ -59,7 +73,7 @@ const Clients = () => {
           <div className="h-1 w-12 bg-icy-blue mt-1"></div>
         </div>
 
-        <button 
+        <button
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 bg-icy-blue text-jet-black px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-icy-blue/10"
         >
@@ -67,32 +81,34 @@ const Clients = () => {
           Nuevo Cliente
         </button>
       </div>
-
-      {/* CONTENEDOR DE TABLA */}
       <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden">
-        
-        {/* BUSCADOR */}
         <div className="p-4 border-b border-white/5 bg-white/[0.01]">
           <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-pale-slate" size={16} />
-            <input 
-              type="text" 
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-pale-slate"
+              size={16}
+            />
+            <input
+              type="text"
               placeholder="Buscar por nombre, patente o teléfono..."
               className="w-full bg-jet-black/50 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-xs text-lavender outline-none focus:border-icy-blue/30 transition-all"
             />
           </div>
         </div>
 
-        {/* TABLA RESPONSIVE */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm border-collapse">
             <thead>
               <tr className="bg-white/[0.02] text-[10px] uppercase tracking-[0.15em] text-pale-slate font-bold">
-                <th className="px-6 py-4 border-b border-white/5 w-16 text-center">ID</th>
+                <th className="px-6 py-4 border-b border-white/5 w-16 text-center">
+                  ID
+                </th>
                 <th className="px-6 py-4 border-b border-white/5">Cliente</th>
                 <th className="px-6 py-4 border-b border-white/5">Contacto</th>
                 <th className="px-6 py-4 border-b border-white/5">Vehículos</th>
-                <th className="px-6 py-4 border-b border-white/5 text-right">Acciones</th>
+                <th className="px-6 py-4 border-b border-white/5 text-right">
+                  Acciones
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.02]">
@@ -109,39 +125,52 @@ const Clients = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
-                        <span className="text-lavender/60 text-xs">{client.email || 'Sin email'}</span>
-                        <span className="text-pale-slate text-[11px]">{client.phone}</span>
+                        <span className="text-lavender/60 text-xs">
+                          {client.email || "Sin email"}
+                        </span>
+                        <span className="text-pale-slate text-[11px]">
+                          {client.phone}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       {client.vehicles.length > 0 ? (
-                        <button 
+                        <button
                           onClick={() => toggleExpand(client.id)}
                           className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1 rounded-md text-[10px] font-bold text-pale-slate hover:border-icy-blue/30 hover:text-icy-blue transition-all"
                         >
                           <Car size={12} />
-                          {client.vehicles.length} {client.vehicles.length === 1 ? 'VEHÍCULO' : 'VEHÍCULOS'}
-                          {expandedClientId === client.id ? <ChevronUp size={12}/> : <ChevronDown size={12}/>}
+                          {client.vehicles.length}{" "}
+                          {client.vehicles.length === 1
+                            ? "VEHÍCULO"
+                            : "VEHÍCULOS"}
+                          {expandedClientId === client.id ? (
+                            <ChevronUp size={12} />
+                          ) : (
+                            <ChevronDown size={12} />
+                          )}
                         </button>
                       ) : (
-                        <span className="text-pale-slate/30 text-[10px] italic uppercase tracking-tighter">Sin vehículos</span>
+                        <span className="text-pale-slate/30 text-[10px] italic uppercase tracking-tighter">
+                          Sin vehículos
+                        </span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                        <button 
+                        <button
                           title="Historial de Ventas (Sales)"
                           className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-lavender transition-colors"
                         >
                           <History size={16} />
                         </button>
-                        <button 
+                        <button
                           title="Editar Cliente"
                           className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-icy-blue transition-colors"
                         >
                           <Edit2 size={16} />
                         </button>
-                        <button 
+                        <button
                           title="Eliminar"
                           className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-red-400 transition-colors"
                         >
@@ -153,14 +182,26 @@ const Clients = () => {
 
                   {expandedClientId === client.id && (
                     <tr className="bg-icy-blue/[0.02] animate-in slide-in-from-top-1 duration-200">
-                      <td colSpan={5} className="px-16 py-4 border-l-2 border-icy-blue/30">
+                      <td
+                        colSpan={5}
+                        className="px-16 py-4 border-l-2 border-icy-blue/30"
+                      >
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           {client.vehicles.map((v, i) => (
-                            <div key={i} className="bg-jet-black/50 border border-white/10 p-3 rounded-lg flex justify-between items-center">
+                            <div
+                              key={i}
+                              className="bg-jet-black/50 border border-white/10 p-3 rounded-lg flex justify-between items-center"
+                            >
                               <div>
-                                <p className="text-[10px] font-bold text-icy-blue uppercase">{v.brand} {v.model}</p>
-                                <p className="text-lavender font-mono text-sm tracking-wider">{v.license_plate}</p>
-                                <p className="text-pale-slate text-[10px] uppercase mt-1">{v.color} • {v.year}</p>
+                                <p className="text-[10px] font-bold text-icy-blue uppercase">
+                                  {v.brand} {v.model}
+                                </p>
+                                <p className="text-lavender font-mono text-sm tracking-wider">
+                                  {v.license_plate}
+                                </p>
+                                <p className="text-pale-slate text-[10px] uppercase mt-1">
+                                  {v.color} • {v.year}
+                                </p>
                               </div>
                               <Car size={24} className="text-white/5" />
                             </div>
@@ -176,25 +217,29 @@ const Clients = () => {
         </div>
       </div>
 
-      {/* MODAL FORMULARIO */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
-            className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm" 
+          <div
+            className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"
             onClick={() => setIsModalOpen(false)}
           ></div>
           <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-2xl relative shadow-2xl animate-in zoom-in-95 duration-200 overflow-y-auto max-h-[90vh]">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-xl font-bold text-lavender italic uppercase tracking-tight">Registro de Cliente</h2>
+                <h2 className="text-xl font-bold text-lavender italic uppercase tracking-tight">
+                  Registro de Cliente
+                </h2>
                 <div className="h-1 w-8 bg-icy-blue mt-1"></div>
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-pale-slate hover:text-white">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-pale-slate hover:text-white"
+              >
                 ✕
               </button>
             </div>
-            
-            <ClientForm 
+
+            <ClientForm
               onSubmit={handleCreateClient}
               onCancel={() => setIsModalOpen(false)}
             />
