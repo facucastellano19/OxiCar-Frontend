@@ -22,6 +22,8 @@ export const ClientForm = ({
   const {
     register,
     control,
+    watch,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm<ClientFormType>({
@@ -40,8 +42,32 @@ export const ClientForm = ({
     name: "vehicles",
   });
 
+  const handleRemoveVehicle = (index: number) => {
+    const vehicle = watch(`vehicles.${index}`);
+
+    if (vehicle && typeof vehicle.id === "number") {
+      setValue(`vehicles.${index}.deleted`, true);
+    } else {
+      remove(index);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={handleSubmit(
+        (data) => {
+          console.log(
+            "Formulario válido, enviando datos al componente padre:",
+            data,
+          );
+          onSubmit(data);
+        },
+        (err) => {
+          console.log("Zod bloqueó el envío por estos errores:", err);
+        },
+      )}
+      className="space-y-6"
+    >
       {/* CLIENT PERSONAL INFORMATION SECTION */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* FIRST NAME FIELD */}
@@ -143,7 +169,9 @@ export const ClientForm = ({
 
         {/* VEHICLE LIST CONTAINER */}
         <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-          {fields.length === 0 ? (
+          {/* Calculamos si hay vehículos visibles (que no tengan la marca 'deleted') */}
+          {fields.filter((_, idx) => !watch(`vehicles.${idx}.deleted`))
+            .length === 0 ? (
             /* EMPTY STATE UI */
             <div className="py-10 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-xl bg-white/[0.01]">
               <div className="p-3 bg-white/5 rounded-full mb-3">
@@ -158,94 +186,103 @@ export const ClientForm = ({
             </div>
           ) : (
             /* RENDER VEHICLE INPUT CARDS */
-            fields.map((field, index) => (
-              <div
-                key={field.id}
-                className="p-4 bg-white/[0.02] border border-white/5 rounded-lg"
-              >
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {/* LICENSE PLATE */}
-                  <div className="flex flex-col gap-1">
-                    <input
-                      {...register(`vehicles.${index}.license_plate`)}
-                      placeholder="Patente"
-                      className={`bg-jet-black border ${errors.vehicles?.[index]?.license_plate ? "border-red-500" : "border-white/10"} rounded-md py-2 px-3 text-xs text-lavender outline-none focus:border-icy-blue/30`}
-                    />
-                    {errors.vehicles?.[index]?.license_plate && (
-                      <span className="text-red-400 text-[9px] font-medium ml-1 normal-case italic">
-                        {errors.vehicles[index]?.license_plate?.message}
-                      </span>
-                    )}
-                  </div>
+            fields.map((field, index) => {
+              if (watch(`vehicles.${index}.deleted`)) return null;
 
-                  {/* BRAND */}
-                  <div className="flex flex-col gap-1">
+              return (
+                <div
+                  key={field.id}
+                  className="p-4 bg-white/[0.02] border border-white/5 rounded-lg"
+                >
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <input
-                      {...register(`vehicles.${index}.brand`)}
-                      placeholder="Marca"
-                      className={`bg-jet-black border ${errors.vehicles?.[index]?.brand ? "border-red-500" : "border-white/10"} rounded-md py-2 px-3 text-xs text-lavender outline-none focus:border-icy-blue/30`}
+                      type="hidden"
+                      {...register(`vehicles.${index}.id`)}
                     />
-                    {errors.vehicles?.[index]?.brand && (
-                      <span className="text-red-400 text-[9px] font-medium ml-1 normal-case italic">
-                        {errors.vehicles[index]?.brand?.message}
-                      </span>
-                    )}
-                  </div>
 
-                  {/* MODEL */}
-                  <div className="flex flex-col gap-1">
-                    <input
-                      {...register(`vehicles.${index}.model`)}
-                      placeholder="Modelo"
-                      className={`bg-jet-black border ${errors.vehicles?.[index]?.model ? "border-red-500" : "border-white/10"} rounded-md py-2 px-3 text-xs text-lavender outline-none focus:border-icy-blue/30`}
-                    />
-                    {errors.vehicles?.[index]?.model && (
-                      <span className="text-red-400 text-[9px] font-medium ml-1 normal-case italic">
-                        {errors.vehicles[index]?.model?.message}
-                      </span>
-                    )}
-                  </div>
+                    {/* LICENSE PLATE */}
+                    <div className="flex flex-col gap-1">
+                      <input
+                        {...register(`vehicles.${index}.license_plate`)}
+                        placeholder="Patente"
+                        className={`bg-jet-black border ${errors.vehicles?.[index]?.license_plate ? "border-red-500" : "border-white/10"} rounded-md py-2 px-3 text-xs text-lavender outline-none focus:border-icy-blue/30`}
+                      />
+                      {errors.vehicles?.[index]?.license_plate && (
+                        <span className="text-red-400 text-[9px] font-medium ml-1 normal-case italic">
+                          {errors.vehicles[index]?.license_plate?.message}
+                        </span>
+                      )}
+                    </div>
 
-                  {/* COLOR */}
-                  <div className="flex flex-col gap-1">
-                    <input
-                      {...register(`vehicles.${index}.color`)}
-                      placeholder="Color"
-                      className={`bg-jet-black border ${errors.vehicles?.[index]?.color ? "border-red-500" : "border-white/10"} rounded-md py-2 px-3 text-xs text-lavender outline-none focus:border-icy-blue/30`}
-                    />
-                    {errors.vehicles?.[index]?.color && (
-                      <span className="text-red-400 text-[9px] font-medium ml-1 normal-case italic">
-                        {errors.vehicles[index]?.color?.message}
-                      </span>
-                    )}
-                  </div>
+                    {/* BRAND */}
+                    <div className="flex flex-col gap-1">
+                      <input
+                        {...register(`vehicles.${index}.brand`)}
+                        placeholder="Marca"
+                        className={`bg-jet-black border ${errors.vehicles?.[index]?.brand ? "border-red-500" : "border-white/10"} rounded-md py-2 px-3 text-xs text-lavender outline-none focus:border-icy-blue/30`}
+                      />
+                      {errors.vehicles?.[index]?.brand && (
+                        <span className="text-red-400 text-[9px] font-medium ml-1 normal-case italic">
+                          {errors.vehicles[index]?.brand?.message}
+                        </span>
+                      )}
+                    </div>
 
-                  {/* YEAR */}
-                  <div className="flex flex-col gap-1">
-                    <input
-                      type="number"
-                      {...register(`vehicles.${index}.year`)}
-                      placeholder="Año"
-                      className={`bg-jet-black border ${errors.vehicles?.[index]?.year ? "border-red-500" : "border-white/10"} rounded-md py-2 px-3 text-xs text-lavender outline-none focus:border-icy-blue/30`}
-                    />
-                    {errors.vehicles?.[index]?.year && (
-                      <span className="text-red-400 text-[9px] font-medium ml-1 normal-case italic">
-                        {errors.vehicles[index]?.year?.message}
-                      </span>
-                    )}
-                  </div>
+                    {/* MODEL */}
+                    <div className="flex flex-col gap-1">
+                      <input
+                        {...register(`vehicles.${index}.model`)}
+                        placeholder="Modelo"
+                        className={`bg-jet-black border ${errors.vehicles?.[index]?.model ? "border-red-500" : "border-white/10"} rounded-md py-2 px-3 text-xs text-lavender outline-none focus:border-icy-blue/30`}
+                      />
+                      {errors.vehicles?.[index]?.model && (
+                        <span className="text-red-400 text-[9px] font-medium ml-1 normal-case italic">
+                          {errors.vehicles[index]?.model?.message}
+                        </span>
+                      )}
+                    </div>
 
-                  {/* REMOVE BUTTON */}
-                  <button
-                    type="button"
-                    onClick={() => remove(index)}
-                    className="flex items-center justify-center gap-2 text-red-400/50 hover:text-red-400 text-[10px] font-bold uppercase transition-colors"
-                  >
-                    <Trash2 size={14} /> Quitar
-                  </button>
+                    {/* COLOR */}
+                    <div className="flex flex-col gap-1">
+                      <input
+                        {...register(`vehicles.${index}.color`)}
+                        placeholder="Color"
+                        className={`bg-jet-black border ${errors.vehicles?.[index]?.color ? "border-red-500" : "border-white/10"} rounded-md py-2 px-3 text-xs text-lavender outline-none focus:border-icy-blue/30`}
+                      />
+                      {errors.vehicles?.[index]?.color && (
+                        <span className="text-red-400 text-[9px] font-medium ml-1 normal-case italic">
+                          {errors.vehicles[index]?.color?.message}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* YEAR */}
+                    <div className="flex flex-col gap-1">
+                      <input
+                        type="number"
+                        {...register(`vehicles.${index}.year`)}
+                        placeholder="Año"
+                        className={`bg-jet-black border ${errors.vehicles?.[index]?.year ? "border-red-500" : "border-white/10"} rounded-md py-2 px-3 text-xs text-lavender outline-none focus:border-icy-blue/30`}
+                      />
+                      {errors.vehicles?.[index]?.year && (
+                        <span className="text-red-400 text-[9px] font-medium ml-1 normal-case italic">
+                          {errors.vehicles[index]?.year?.message}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* REMOVE BUTTON - Ahora llama a handleRemoveVehicle */}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveVehicle(index)}
+                      className="flex items-center justify-center gap-2 text-red-400/50 hover:text-red-400 text-[10px] font-bold uppercase transition-colors"
+                    >
+                      <Trash2 size={14} /> Quitar
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

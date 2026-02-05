@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 export const vehicleSchema = z.object({
+  id: z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z.number().optional().nullable(),
+  ),
   brand: z.string().min(1, "La marca es obligatoria"),
   model: z.string().min(1, "El modelo es obligatorio"),
   year: z.coerce
@@ -9,6 +13,7 @@ export const vehicleSchema = z.object({
     .max(new Date().getFullYear() + 1, "El año no es válido"),
   color: z.string().min(1, "El color es obligatorio"),
   license_plate: z.string().min(1, "La patente es obligatoria"),
+  deleted: z.boolean().optional(),
 });
 
 export const clientSchema = z.object({
@@ -32,10 +37,9 @@ export interface Client extends ClientForm {
   updated_by?: number;
 }
 
-
 export interface ClientsResponse {
   message: string;
-  data: Client[]; 
+  data: Client[];
 }
 
 export interface SingleClientResponse {

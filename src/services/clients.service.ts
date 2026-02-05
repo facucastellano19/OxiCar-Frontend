@@ -16,4 +16,11 @@ export const clientsService = {
     return data;
   },
 
+  update: async (id: number, clientData: ClientForm,): Promise<ClientsResponse> => {
+    const { data } = await privateAxios.put<ClientsResponse>(
+      `/clients/${id}`,
+      clientData,
+    );
+    return data;
+  },
 };

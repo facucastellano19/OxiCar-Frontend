@@ -20,6 +20,7 @@ import { handleBackendError } from "../../utilities";
 const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedClientId, setExpandedClientId] = useState<number | null>(null);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,18 +42,30 @@ const Clients = () => {
     loadClients();
   }, []);
 
-  const handleCreateClient = async (data: ClientFormType) => {
+  const handleEditClick = (client: Client) => {
+    setSelectedClient(client);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveClient = async (data: ClientFormType) => {
     try {
-      await clientsService.create(data);
+      if (selectedClient) {
+        await clientsService.update(selectedClient.id, data);
+        alert("¡Cliente actualizado con éxito!");
+      } else {
+        await clientsService.create(data);
+        alert("¡Cliente registrado con éxito!");
+      }
+
       await loadClients();
       setIsModalOpen(false);
-      alert("¡Cliente registrado con éxito!");
+      setSelectedClient(null);
     } catch (error: any) {
       const errorMessage = handleBackendError(error);
       alert(errorMessage);
-      console.error("Error original del backend:", error.response?.data);
     }
   };
+
   const toggleExpand = (id: number) => {
     setExpandedClientId(expandedClientId === id ? null : id);
   };
@@ -166,11 +179,11 @@ const Clients = () => {
                           <button className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-lavender">
                             <History size={16} />
                           </button>
-                          <button className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-icy-blue">
+                          <button
+                            onClick={() => handleEditClick(client)}
+                            className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-icy-blue"
+                          >
                             <Edit2 size={16} />
-                          </button>
-                          <button className="p-2 hover:bg-white/5 rounded-md text-red-400/50 hover:text-red-400">
-                            <Trash2 size={16} />
                           </button>
                         </div>
                       </td>
@@ -227,26 +240,24 @@ const Clients = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => {
+              setIsModalOpen(false);
+              setSelectedClient(null);
+            }}
           ></div>
-          <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-2xl relative shadow-2xl animate-in zoom-in-95 duration-200 overflow-y-auto max-h-[90vh]">
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h2 className="text-xl font-bold text-lavender italic uppercase tracking-tight">
-                  Registro de Cliente
-                </h2>
-                <div className="h-1 w-8 bg-icy-blue mt-1"></div>
-              </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-pale-slate hover:text-white"
-              >
-                ✕
-              </button>
-            </div>
+
+          <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-2xl relative">
+            <h2 className="text-xl font-bold text-lavender uppercase mb-6">
+              {selectedClient ? "Editar Cliente" : "Nuevo Cliente"}
+            </h2>
+
             <ClientForm
-              onSubmit={handleCreateClient}
-              onCancel={() => setIsModalOpen(false)}
+              initialData={selectedClient || undefined}
+              onSubmit={handleSaveClient}
+              onCancel={() => {
+                setIsModalOpen(false);
+                setSelectedClient(null);
+              }}
             />
           </div>
         </div>
