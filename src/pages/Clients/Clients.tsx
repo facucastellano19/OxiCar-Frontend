@@ -16,6 +16,7 @@ import type {
 } from "../../models/clients.model";
 import { clientsService } from "../../services/clients.service";
 import { handleBackendError } from "../../utilities";
+import {toast} from "sonner";
 
 const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,10 +53,10 @@ const Clients = () => {
     try {
       if (selectedClient) {
         await clientsService.update(selectedClient.id, data);
-        alert("¡Cliente actualizado con éxito!");
+        toast.success("¡Cliente actualizado con éxito!");
       } else {
         await clientsService.create(data);
-        alert("¡Cliente registrado con éxito!");
+        toast.success("¡Cliente registrado con éxito!");
       }
 
       await loadClients();
@@ -63,7 +64,7 @@ const Clients = () => {
       setSelectedClient(null);
     } catch (error: any) {
       const errorMessage = handleBackendError(error);
-      alert(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
