@@ -78,10 +78,10 @@ export const ClientForm = ({
           )}
         </div>
 
-        {/* WHATSAPP FIELD */}
+        {/* Phone */}
         <div className="flex flex-col gap-1.5">
           <label className="text-[10px] font-bold text-pale-slate uppercase tracking-widest ml-1">
-            WhatsApp
+            Teléfono
           </label>
           <input
             {...register("phone")}

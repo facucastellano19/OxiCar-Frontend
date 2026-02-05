@@ -6,7 +6,6 @@ type UseApiOptions<P> = {
   params: P
 }
 
-
 type Data<T> = T | null;
 type CustomError = Error | null;
 

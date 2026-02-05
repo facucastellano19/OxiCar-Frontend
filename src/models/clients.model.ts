@@ -31,3 +31,14 @@ export interface Client extends ClientForm {
   created_by?: number;
   updated_by?: number;
 }
+
+
+export interface ClientsResponse {
+  message: string;
+  data: Client[]; 
+}
+
+export interface SingleClientResponse {
+  message: string;
+  data: Client;
+}
