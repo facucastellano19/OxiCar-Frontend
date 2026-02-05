@@ -244,7 +244,6 @@ const Clients = () => {
           <div
             className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"
             onClick={() => {
-              setIsModalOpen(false);
               setSelectedClient(null);
             }}
           ></div>

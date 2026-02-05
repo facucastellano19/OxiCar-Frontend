@@ -56,10 +56,6 @@ export const ClientForm = ({
     <form
       onSubmit={handleSubmit(
         (data) => {
-          console.log(
-            "Formulario válido, enviando datos al componente padre:",
-            data,
-          );
           onSubmit(data);
         },
         (err) => {
