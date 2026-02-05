@@ -6,8 +6,10 @@ import type {
 import { privateAxios } from "./axios.service";
 
 export const clientsService = {
-  getAll: async (): Promise<ClientsResponse> => {
-    const { data } = await privateAxios.get<ClientsResponse>("/clients");
+  getAll: async (search?: string): Promise<ClientsResponse> => {
+    const { data } = await privateAxios.get<ClientsResponse>("/clients", {
+      params: { search },
+    });
     return data;
   },
 

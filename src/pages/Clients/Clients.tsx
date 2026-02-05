@@ -23,11 +23,12 @@ const Clients = () => {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const[searchTerm, setSearchTerm] = useState("");
 
-  const loadClients = async () => {
+  const loadClients = async (search?: string) => {
     try {
       setIsLoading(true);
-      const response = await clientsService.getAll();
+      const response = await clientsService.getAll(search);
       const actualClients = response.data;
       setClients(Array.isArray(actualClients) ? actualClients : []);
     } catch (error) {
@@ -39,8 +40,8 @@ const Clients = () => {
   };
 
   useEffect(() => {
-    loadClients();
-  }, []);
+    loadClients(searchTerm);
+  }, [searchTerm]);
 
   const handleEditClick = (client: Client) => {
     setSelectedClient(client);
@@ -101,6 +102,7 @@ const Clients = () => {
             <input
               type="text"
               placeholder="Buscar por nombre, patente o teléfono..."
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-jet-black/50 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-xs text-lavender outline-none focus:border-icy-blue/30 transition-all"
             />
           </div>
