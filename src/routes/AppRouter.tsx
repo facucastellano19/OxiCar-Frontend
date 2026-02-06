@@ -4,6 +4,7 @@ import { AuthGuard } from "../guards/auth.guards"
 import { Home } from "../pages/Home/Home"
 import { Login } from "../pages/Login/Login"
 import { MainLayout } from "../components/"
+import Clients from "../pages/Clients/Clients"
 
 export const AppRouter = () => {
     return (
@@ -14,7 +15,7 @@ export const AppRouter = () => {
   <Route element={<AuthGuard />}>
     <Route element={<MainLayout />}>
       <Route path={PrivateRoutes.HOME} element={<Home />} />
-      
+      <Route path={PrivateRoutes.CLIENTS} element={<Clients />} />      
     </Route>
   </Route>
 

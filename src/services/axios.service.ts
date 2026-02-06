@@ -1,7 +1,37 @@
-import axios from 'axios';
+import axios from "axios";
+
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+
 export const publicAxios = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL,
   headers: {
-    'Content-Type': 'application/json'
+    "Content-Type": "application/json",
+  },
+});
+
+export const privateAxios = axios.create({
+  baseURL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+/* INTERCEPTOR TO INJECT TOKEN FROM ZUSTAND STORAGE */
+privateAxios.interceptors.request.use((config) => {
+  const rawStorage = localStorage.getItem("user-storage");
+
+  if (rawStorage) {
+    try {
+      const parsedStorage = JSON.parse(rawStorage);
+      const token = parsedStorage.state?.token;
+
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (error) {
+      console.error("Axios Interceptor: Error parsing token", error);
+    }
   }
+
+  return config;
 });
