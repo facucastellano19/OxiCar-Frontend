@@ -8,7 +8,20 @@
   --color-icy-blue: #b0d7ff;
 }
 
-body {
-  background-color: var(--color-jet-black);
-  color: var(--color-lavender);
+.tooltip-container {
+  @apply relative flex items-center justify-center;
+}
+
+.tooltip-text {
+  @apply invisible opacity-0 scale-95
+         group-hover/tip:visible group-hover/tip:opacity-100 group-hover/tip:scale-100
+         absolute -top-10 left-1/2 -translate-x-1/2 
+         bg-jet-black border border-white/10 text-[10px] text-lavender 
+         py-1.5 px-2.5 rounded-md whitespace-nowrap transition-all duration-200 z-[70]
+         pointer-events-none shadow-2xl font-bold tracking-widest;
+}
+.tooltip-text::after {
+  content: "";
+  @apply absolute top-full left-1/2 -translate-x-1/2 
+         border-8 border-transparent border-t-jet-black;
 }

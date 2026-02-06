@@ -16,7 +16,7 @@ import type {
 } from "../../models/clients.model";
 import { clientsService } from "../../services/clients.service";
 import { handleBackendError } from "../../utilities";
-import {toast} from "sonner";
+import { toast } from "sonner";
 import { PurchaseHistoryModal } from "./Components";
 
 const Clients = () => {
@@ -25,10 +25,10 @@ const Clients = () => {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const[searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-const [historyData, setHistoryData] = useState<any>(null); 
-const [loadingHistory, setLoadingHistory] = useState(false);
+  const [historyData, setHistoryData] = useState<any>(null);
+  const [loadingHistory, setLoadingHistory] = useState(false);
 
   const loadClients = async (search?: string) => {
     try {
@@ -74,10 +74,10 @@ const [loadingHistory, setLoadingHistory] = useState(false);
 
   const handleViewHistory = async (client: Client) => {
     try {
-      setSelectedClient(client); 
+      setSelectedClient(client);
       setIsHistoryModalOpen(true);
       setLoadingHistory(true);
-      
+
       const data = await clientsService.getPurchaseHistory(client.id);
       setHistoryData(data);
     } catch (error) {
@@ -198,16 +198,32 @@ const [loadingHistory, setLoadingHistory] = useState(false);
                         )}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                          <button onClick={() => handleViewHistory(client)} className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-lavender">
-                            <History size={16} />
-                          </button>
-                          <button
-                            onClick={() => handleEditClick(client)}
-                            className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-icy-blue"
-                          >
-                            <Edit2 size={16} />
-                          </button>
+                        <div className="flex justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
+                          {/* TOOLTIP History */}
+                          <div className="tooltip-container group/tip">
+                            <button
+                              onClick={() => handleViewHistory(client)}
+                              className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-lavender transition-all"
+                            >
+                              <History size={16} />
+                            </button>
+                            <span className="tooltip-text uppercase">
+                              Ver Historial
+                            </span>
+                          </div>
+
+                          {/* TOOLTIP Edit */}
+                          <div className="tooltip-container group/tip">
+                            <button
+                              onClick={() => handleEditClick(client)}
+                              className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-icy-blue transition-all"
+                            >
+                              <Edit2 size={16} />
+                            </button>
+                            <span className="tooltip-text uppercase">
+                              Editar Cliente
+                            </span>
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -287,19 +303,17 @@ const [loadingHistory, setLoadingHistory] = useState(false);
 
       {/* PURCHASE HISTORY MODAL */}
       {isHistoryModalOpen && (
-              <PurchaseHistoryModal
-                history={historyData}
-                clientName={`${selectedClient?.first_name} ${selectedClient?.last_name}`}
-                isLoading={loadingHistory}
-                onClose={() => {
-                  setIsHistoryModalOpen(false);
-                  setHistoryData(null);
-                  setSelectedClient(null);
-                }}
-              />
-            )}
-
-
+        <PurchaseHistoryModal
+          history={historyData}
+          clientName={`${selectedClient?.first_name} ${selectedClient?.last_name}`}
+          isLoading={loadingHistory}
+          onClose={() => {
+            setIsHistoryModalOpen(false);
+            setHistoryData(null);
+            setSelectedClient(null);
+          }}
+        />
+      )}
     </div>
   );
 };
