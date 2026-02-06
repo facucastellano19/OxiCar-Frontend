@@ -17,6 +17,7 @@ import type {
 import { clientsService } from "../../services/clients.service";
 import { handleBackendError } from "../../utilities";
 import {toast} from "sonner";
+import { PurchaseHistoryModal } from "./Components";
 
 const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,6 +26,9 @@ const Clients = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const[searchTerm, setSearchTerm] = useState("");
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+const [historyData, setHistoryData] = useState<any>(null); 
+const [loadingHistory, setLoadingHistory] = useState(false);
 
   const loadClients = async (search?: string) => {
     try {
@@ -65,6 +69,22 @@ const Clients = () => {
     } catch (error: any) {
       const errorMessage = handleBackendError(error);
       toast.error(errorMessage);
+    }
+  };
+
+  const handleViewHistory = async (client: Client) => {
+    try {
+      setSelectedClient(client); 
+      setIsHistoryModalOpen(true);
+      setLoadingHistory(true);
+      
+      const data = await clientsService.getPurchaseHistory(client.id);
+      setHistoryData(data);
+    } catch (error) {
+      toast.error("Error al obtener el historial de compras");
+      setIsHistoryModalOpen(false);
+    } finally {
+      setLoadingHistory(false);
     }
   };
 
@@ -179,7 +199,7 @@ const Clients = () => {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                          <button className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-lavender">
+                          <button onClick={() => handleViewHistory(client)} className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-lavender">
                             <History size={16} />
                           </button>
                           <button
@@ -264,6 +284,22 @@ const Clients = () => {
           </div>
         </div>
       )}
+
+      {/* PURCHASE HISTORY MODAL */}
+      {isHistoryModalOpen && (
+              <PurchaseHistoryModal
+                history={historyData}
+                clientName={`${selectedClient?.first_name} ${selectedClient?.last_name}`}
+                isLoading={loadingHistory}
+                onClose={() => {
+                  setIsHistoryModalOpen(false);
+                  setHistoryData(null);
+                  setSelectedClient(null);
+                }}
+              />
+            )}
+
+
     </div>
   );
 };

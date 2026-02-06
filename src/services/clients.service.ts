@@ -2,6 +2,7 @@ import type {
   ClientForm,
   Client,
   ClientsResponse,
+  HistoryResponse,
 } from "../models/clients.model";
 import { privateAxios } from "./axios.service";
 
@@ -25,4 +26,11 @@ export const clientsService = {
     );
     return data;
   },
+
+  getPurchaseHistory: async (clientId: number): Promise<HistoryResponse['data']> => {
+    const { data } = await privateAxios.get<HistoryResponse>(
+      `/clients/${clientId}/history`,
+    );
+    return data.data;
+  }
 };

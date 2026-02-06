@@ -46,3 +46,26 @@ export interface SingleClientResponse {
   message: string;
   data: Client;
 }
+
+export interface ServiceHistory {
+  sale_id: number;
+  created_at: string;
+  sale_total: string;
+  vehicle_info: string;
+  services: { name: string; price: string }[];
+}
+
+export interface ProductHistory {
+  sale_id: number;
+  created_at: string;
+  sale_total: string;
+  products: { name: string; quantity: number; unit_price: string; subtotal: string }[];
+}
+
+export interface HistoryResponse {
+  message: string;
+  data: {
+    servicesHistory: ServiceHistory[];
+    productsHistory: ProductHistory[];
+  };
+}
