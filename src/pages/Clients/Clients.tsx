@@ -21,7 +21,7 @@ import { handleBackendError } from "../../utilities";
 import { toast } from "sonner";
 import { PurchaseHistoryModal } from "./Components";
 
-const Clients = () => {
+export const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [expandedClientId, setExpandedClientId] = useState<number | null>(null);
@@ -313,4 +313,5 @@ return (
   );
 };
 
-export default Clients;
+
+
