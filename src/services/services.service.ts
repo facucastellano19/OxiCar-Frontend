@@ -24,6 +24,10 @@ export const servicesService = {
     return await privateAxios.delete(`/services/${id}`);
   },
 
+  restore: async (id: number) => {
+    return await privateAxios.patch(`/services/${id}/restore`);
+  },
+
   getCategories: async () => {
     const { data } = await privateAxios.get<{ data: ServiceCategory[] }>(
       "/services/categories",
@@ -31,14 +35,19 @@ export const servicesService = {
     return data;
   },
 
-  createCategory: async (categoryName: string) => {
-    return await privateAxios.post("/services/categories", {
-      name: categoryName,
-    });
+  createCategory: async (category: { name: string }) => {
+    return await privateAxios.post("/services/category", category);
   },
 
-  restore: async (id: number) => {
-    return await privateAxios.patch(`/services/${id}/restore`);
+  updateCategory: async (id: number, category: { name: string }) => {
+    return await privateAxios.put(`/services/category/${id}`, category);
   },
 
+  deleteCategory: async (id: number) => {
+    return await privateAxios.delete(`/services/category/${id}`);
+  },
+
+  restoreCategory: async (id: number) => {
+    return await privateAxios.patch(`/services/category/${id}/restore`);
+  },
 };

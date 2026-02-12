@@ -62,7 +62,6 @@ export const Services = () => {
   }, [searchTerm, showInactive]);
 
   /* --- FRONTEND PAGINATION LOGIC --- */
-  const totalPages = Math.ceil(services.length / itemsPerPage);
   const currentServices = services.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
@@ -97,7 +96,7 @@ export const Services = () => {
       toast.success("Servicio reactivado correctamente");
       loadData();
     } catch (e) {
-      toast.error("Error al reactivar el servicio");
+      toast.error("Error al reactivar");
     }
   };
 
