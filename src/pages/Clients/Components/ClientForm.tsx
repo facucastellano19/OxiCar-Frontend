@@ -92,7 +92,7 @@ export const ClientForm = ({
           <input
             {...register("last_name")}
             className={`w-full bg-white/[0.03] border ${errors.last_name ? "border-red-500" : "border-white/10"} rounded-lg py-2.5 px-4 text-lavender outline-none focus:border-icy-blue/30 text-sm transition-all`}
-            placeholder="NC"
+            placeholder="Suarez"
           />
           {errors.last_name && (
             <span className="text-red-400 text-[10px] font-medium ml-1 normal-case">

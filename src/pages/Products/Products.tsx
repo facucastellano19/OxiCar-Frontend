@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { Search, Edit2, Trash2, Plus, Layers, RotateCcw, Package, AlertTriangle } from "lucide-react";
 import { productsService } from "../../services/products.service";
 import type { Product, ProductForm as ProductFormType, ProductCategory } from "../../models/products.model";
-import { ProductForm } from "./Components/ProductForm";
-import { CategoriesForm } from "./Components/CategoriesForm";
+import { ProductForm, CategoriesForm } from "./Components";
 import { toast } from "sonner";
 import { handleBackendError } from "../../utilities";
 import { Button, ConfirmModal, Pagination, Table, Toggle } from "../../components";
@@ -14,6 +13,7 @@ export const Products = () => {
   const [view, setView] = useState<"products" | "categories">("products");
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | "">("");
   const [showInactive, setShowInactive] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,9 +29,16 @@ export const Products = () => {
   const loadData = async () => {
     try {
       setIsLoading(true);
+
+      const categoriesStatus = view === "products" ? "active" : (showInactive ? "inactive" : "active");
+
       const [productsRes, catsRes] = await Promise.all([
-        productsService.getAll(searchTerm, showInactive ? "inactive" : "active"),
-        productsService.getCategories(showInactive ? "inactive" : "active"),
+        productsService.getAll(
+          searchTerm, 
+          showInactive ? "inactive" : "active",
+          selectedCategoryId === "" ? undefined : Number(selectedCategoryId)
+        ),
+        productsService.getCategories(categoriesStatus),
       ]);
 
       const productsData = Array.isArray(productsRes) ? productsRes : (productsRes?.data || []);
@@ -48,7 +55,7 @@ export const Products = () => {
 
   useEffect(() => {
     loadData();
-  }, [searchTerm, showInactive, view]);
+  }, [searchTerm, showInactive, view, selectedCategoryId]);
 
   const dataToPaginate = view === "products" 
     ? products 
@@ -163,15 +170,38 @@ export const Products = () => {
 
       <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden shadow-2xl">
         <div className="p-4 border-b border-white/5 bg-white/[0.01] flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-pale-slate" size={16} />
-            <input
-              type="text"
-              placeholder={view === 'products' ? "Buscar producto..." : "Buscar categoría..."}
-              value={searchTerm}
-              onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-              className="w-full bg-jet-black/50 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-xs text-lavender outline-none focus:border-icy-blue/30 transition-all"
-            />
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative w-full md:w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-pale-slate" size={16} />
+              <input
+                type="text"
+                placeholder={view === 'products' ? "Buscar producto..." : "Buscar categoría..."}
+                value={searchTerm}
+                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                className="w-full bg-jet-black/50 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-xs text-lavender outline-none focus:border-icy-blue/30 transition-all"
+              />
+            </div>
+
+            {view === "products" && (
+              <div className="relative w-full md:w-48">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-pale-slate pointer-events-none">
+                  <Layers size={16} />
+                </div>
+                <select
+                  value={selectedCategoryId}
+                  onChange={(e) => {
+                    setSelectedCategoryId(e.target.value ? Number(e.target.value) : "");
+                    setCurrentPage(1);
+                  }}
+                  className="w-full bg-jet-black/50 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-xs text-lavender outline-none focus:border-icy-blue/30 transition-all appearance-none cursor-pointer"
+                >
+                  <option value="">Todas las categorías</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-4">

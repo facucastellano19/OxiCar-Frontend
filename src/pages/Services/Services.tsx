@@ -13,8 +13,7 @@ import type {
   ServiceForm as ServiceFormType,
   ServiceCategory,
 } from "../../models/services.model";
-import { ServiceForm } from "./Components/ServicesForm";
-import { CategoriesForm } from "./Components/CategoriesForm";
+import { ServiceForm, CategoriesForm } from "./Components";
 import { toast } from "sonner";
 import { handleBackendError } from "../../utilities";
 import { Button, ConfirmModal, Pagination, Table, Toggle } from "../../components/";

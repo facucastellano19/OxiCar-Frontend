@@ -2,9 +2,10 @@ import { privateAxios } from "./axios.service";
 import type { Product, ProductForm, ProductCategory } from "../models/products.model";
 
 export const productsService = {
-  getAll: async (name?: string, status: "active" | "inactive" = "active") => {
+  getAll: async (name?: string, status: "active" | "inactive" | "all" = "active", category_id?: number) => {
     const params: any = { status };
     if (name && name.trim() !== "") params.name = name;
+    if (category_id) params.category_id = category_id;
 
     const { data } = await privateAxios.get<{ data: Product[] }>("/products", {
       params,
@@ -28,7 +29,7 @@ export const productsService = {
     return await privateAxios.patch(`/products/${id}/restore`);
   },
 
-  getCategories: async (status: "active" | "inactive" = "active") => {
+  getCategories: async (status: "active" | "inactive" | "all" = "active") => {
     const { data } = await privateAxios.get<{ data: ProductCategory[] }>(
       "/products/categories",
       { params: { status } }
