@@ -63,7 +63,6 @@ export const Services = () => {
 
   /* --- HANDLERS --- */
   const handleEdit = (service: Service) => {
-    // console.log("DEBUG - DATA RECEIVED:", service);
     setSelectedService(service);
     setIsModalOpen(true);
   };
@@ -150,8 +149,8 @@ export const Services = () => {
             <tbody className="divide-y divide-white/[0.02]">
               {isLoading && services.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-20 text-center text-icy-blue animate-pulse font-bold text-xs uppercase">
-                    Sincronizando...
+                  <td colSpan={5} className="py-20 text-center text-icy-blue animate-pulse font-bold uppercase text-xs">
+                    Cargando servicios...
                   </td>
                 </tr>
               ) : currentServices.map((service) => (
