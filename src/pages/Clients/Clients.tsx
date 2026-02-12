@@ -21,7 +21,7 @@ import { handleBackendError } from "../../utilities";
 import { toast } from "sonner";
 import { PurchaseHistoryModal } from "./Components";
 
-const Clients = () => {
+export const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [expandedClientId, setExpandedClientId] = useState<number | null>(null);
@@ -169,7 +169,7 @@ return (
               ) : currentClients.length > 0 ? (
                 currentClients.map((client) => (
                   <Fragment key={client.id}>
-                    <tr className="hover:bg-white/[0.03] transition-colors group">
+                    <tr className="transition-colors group">
                       <td className="px-6 py-4 font-mono text-xs text-pale-slate text-center italic">#{client.id}</td>
                       <td className="px-6 py-4 font-medium text-lavender uppercase tracking-tight">{client.first_name} {client.last_name}</td>
                       <td className="px-6 py-4">
@@ -210,7 +210,7 @@ return (
                       </td>
                     </tr>
                     {expandedClientId === client.id && (
-                      <tr className="bg-icy-blue/[0.02] animate-in slide-in-from-top-1 duration-200">
+                      <tr className="bg-icy-blue/[0.02] hover:bg-icy-blue/[0.02] animate-in slide-in-from-top-1 duration-200">
                         <td colSpan={5} className="px-16 py-4 border-l-2 border-icy-blue/30">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {client.vehicles.map((v, i) => (
@@ -312,5 +312,3 @@ return (
     </div>
   );
 };
-
-export default Clients;
