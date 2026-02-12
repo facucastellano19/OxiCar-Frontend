@@ -364,7 +364,8 @@ return (
     <ConfirmModal
       isOpen={isDeleteModalOpen}
       title={view === 'services' ? "¿DESACTIVAR SERVICIO?" : "¿DESACTIVAR CATEGORÍA?"}
-      message={`Esta acción quitará el elemento del catálogo activo.\nLo puedes reactivar en cualquier momento.`}
+      message={`Esta acción quitará el elemento del catálogo activo.
+        \nLo puedes reactivar en cualquier momento.`}
       onConfirm={confirmDelete}
       onCancel={() => { setIsDeleteModalOpen(false); setServiceToDelete(null); }}
     />
