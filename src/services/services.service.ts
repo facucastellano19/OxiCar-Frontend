@@ -28,9 +28,10 @@ export const servicesService = {
     return await privateAxios.patch(`/services/${id}/restore`);
   },
 
-  getCategories: async () => {
+  getCategories: async (status: "active" | "inactive" = "active") => {
     const { data } = await privateAxios.get<{ data: ServiceCategory[] }>(
       "/services/categories",
+      { params: { status } }
     );
     return data;
   },
