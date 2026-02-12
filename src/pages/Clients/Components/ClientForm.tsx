@@ -5,6 +5,7 @@ import {
   type ClientForm as ClientFormType,
 } from "../../../models/clients.model";
 import { User, Mail, Phone, Car, Save, Plus, Trash2 } from "lucide-react";
+import { Button } from "../../../components";
 
 interface Props {
   initialData?: ClientFormType;
@@ -146,7 +147,7 @@ export const ClientForm = ({
               Sección opcional
             </span>
           </div>
-          <button
+          <Button
             type="button"
             onClick={() =>
               append({
@@ -157,10 +158,10 @@ export const ClientForm = ({
                 color: "",
               })
             }
-            className="flex items-center gap-1.5 text-[10px] font-bold text-icy-blue hover:text-white transition-colors bg-icy-blue/10 px-2 py-1 rounded border border-icy-blue/20"
+            className="text-[10px] font-bold text-icy-blue hover:text-white transition-colors bg-icy-blue/10 px-2 py-1 rounded border border-icy-blue/20"
           >
             <Plus size={12} /> AÑADIR VEHÍCULO
-          </button>
+          </Button>
         </div>
 
         {/* VEHICLE LIST CONTAINER */}
@@ -268,13 +269,13 @@ export const ClientForm = ({
                     </div>
 
                     {/* REMOVE BUTTON - Ahora llama a handleRemoveVehicle */}
-                    <button
+                    <Button
                       type="button"
                       onClick={() => handleRemoveVehicle(index)}
-                      className="flex items-center justify-center gap-2 text-red-400/50 hover:text-red-400 text-[10px] font-bold uppercase transition-colors"
+                      className="text-red-400/50 hover:text-red-400 text-[10px] font-bold uppercase transition-colors bg-transparent border-none shadow-none"
                     >
                       <Trash2 size={14} /> Quitar
-                    </button>
+                    </Button>
                   </div>
                 </div>
               );
@@ -285,21 +286,21 @@ export const ClientForm = ({
 
       {/* FORM FOOTER ACTIONS */}
       <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
-        <button
+        <Button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 text-xs font-bold text-pale-slate hover:text-white transition-colors uppercase tracking-widest"
+          className="px-4 py-2 text-xs font-bold text-pale-slate hover:text-white transition-colors uppercase tracking-widest bg-transparent border-none shadow-none"
         >
           Cancelar
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="bg-icy-blue text-jet-black px-8 py-2.5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-white transition-all flex items-center gap-2 shadow-lg shadow-icy-blue/10 active:scale-95 disabled:opacity-50"
+          className="bg-icy-blue text-jet-black px-8 py-2.5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-white transition-all flex items-center gap-2 shadow-lg shadow-icy-blue/10 disabled:opacity-50"
         >
           <Save size={14} />
           {initialData ? "Actualizar" : "Guardar Cliente"}
-        </button>
+        </Button>
       </div>
     </form>
   );

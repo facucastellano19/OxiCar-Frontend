@@ -178,7 +178,7 @@ return (
               <Plus size={20} /> {view === 'services' ? 'Nuevo servicio' : 'Nueva categoría'}
             </Button>
           ) : (
-            <div className="h-[36px]"></div>
+            <div className="h-[40px]"></div>
           )}
       </div>
     </div>
