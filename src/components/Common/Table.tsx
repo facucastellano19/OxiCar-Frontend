@@ -44,7 +44,7 @@ export const Table = ({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.02]">
+          <tbody className="divide-y divide-white/[0.02] [&>tr:nth-child(even)]:bg-white/[0.01] [&>tr:hover]:bg-white/[0.04] transition-colors">
             {isLoading ? (
               <tr>
                 <td colSpan={finalColSpan} className="py-20 text-center text-icy-blue animate-pulse font-bold text-xs uppercase">

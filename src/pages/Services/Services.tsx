@@ -53,7 +53,6 @@ export const Services = () => {
         servicesService.getCategories(showInactive ? "inactive" : "active"),
       ]);
 
-      // Manejo flexible de la respuesta (array directo o envuelto en .data)
       const servicesData = Array.isArray(servicesRes) ? servicesRes : (servicesRes?.data || []);
       const categoriesData = Array.isArray(catsRes) ? catsRes : (catsRes?.data || []);
 
@@ -240,7 +239,7 @@ return (
       >
         {view === 'services' 
           ? (currentData as Service[]).map((service) => (
-                <tr key={service.id} className="hover:bg-white/[0.03] transition-colors group">
+                <tr key={service.id} className="transition-colors group">
                   <td className="px-6 py-4 font-mono text-xs text-pale-slate text-center opacity-40 italic">#{service.id}</td>
                   <td className="px-6 py-4 font-medium text-lavender uppercase tracking-tight">{service.name}</td>
                   <td className="px-6 py-4">
@@ -281,7 +280,7 @@ return (
                 </tr>
             ))
           : (currentData as ServiceCategory[]).map((category) => (
-              <tr key={category.id} className="hover:bg-white/[0.03] transition-colors group">
+              <tr key={category.id} className="transition-colors group">
                 <td className="px-6 py-4 font-mono text-xs text-pale-slate text-center opacity-40 italic">#{category.id}</td>
                 <td className="px-6 py-4 font-medium text-lavender uppercase tracking-tight">
                   <span className="flex items-center gap-2">
