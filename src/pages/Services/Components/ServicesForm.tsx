@@ -1,13 +1,14 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { 
-  serviceSchema, 
-  type ServiceForm as ServiceFormType, 
-  type Service, 
-  type ServiceCategory 
+import {
+  serviceSchema,
+  type ServiceForm as ServiceFormType,
+  type Service,
+  type ServiceCategory,
 } from "../../../models/services.model";
 import { Save, Layers, Tag, DollarSign } from "lucide-react";
+import { Button } from "../../../components";
 
 interface Props {
   initialData?: Service | null;
@@ -53,13 +54,12 @@ export const ServiceForm = ({
     <form
       onSubmit={handleSubmit(
         (data) => onSubmit(data),
-        (err) => console.log("Zod validation errors:", err)
+        (err) => console.log("Zod validation errors:", err),
       )}
       className="space-y-6"
     >
       {/* SERVICE INFORMATION SECTION */}
       <div className="space-y-4">
-        
         {/* SERVICE NAME FIELD */}
         <div className="flex flex-col gap-1.5">
           <label className="text-[10px] font-bold text-pale-slate uppercase tracking-widest ml-1">
@@ -101,7 +101,9 @@ export const ServiceForm = ({
                   errors.category_id ? "border-red-500" : "border-white/10"
                 } rounded-lg py-2.5 pl-10 pr-4 text-lavender outline-none focus:border-icy-blue/30 text-sm transition-all appearance-none cursor-pointer`}
               >
-                <option value={0} disabled>Seleccionar...</option>
+                <option value={0} disabled>
+                  Seleccionar...
+                </option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={Number(cat.id)}>
                     {cat.name.toUpperCase()}
@@ -146,21 +148,28 @@ export const ServiceForm = ({
 
       {/* FORM FOOTER ACTIONS */}
       <div className="flex justify-end gap-3 pt-6 border-t border-white/5">
-        <button
+        <Button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 text-xs font-bold text-pale-slate hover:text-white transition-colors uppercase tracking-[0.2em]"
+          className="px-4 py-2 text-xs font-bold text-pale-slate hover:text-white uppercase tracking-[0.2em] bg-transparent border-none shadow-none"
         >
           Cancelar
-        </button>
-        <button
+        </Button>
+
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="bg-icy-blue text-jet-black px-8 py-2.5 rounded-lg font-black text-xs uppercase tracking-[0.2em] hover:bg-white transition-all flex items-center gap-2 shadow-lg shadow-icy-blue/10 active:scale-95 disabled:opacity-50"
+          className="bg-icy-blue text-jet-black px-8 py-2.5 rounded-lg font-black text-xs uppercase tracking-[0.2em] hover:bg-white shadow-lg shadow-icy-blue/10 disabled:opacity-50"
         >
-          <Save size={14} />
-          {initialData ? "Actualizar" : "Guardar Servicio"}
-        </button>
+          {isSubmitting ? (
+            <span className="animate-pulse">Procesando...</span>
+          ) : (
+            <>
+              <Save size={14} />
+              {initialData ? "Actualizar" : "Guardar Servicio"}
+            </>
+          )}
+        </Button>
       </div>
     </form>
   );

@@ -2,8 +2,9 @@ import { privateAxios } from "./axios.service";
 import type { Service, ServiceForm, ServiceCategory } from "../models/";
 
 export const servicesService = {
-  getAll: async (name?: string) => {
-    const params = name && name.trim() !== "" ? { name } : {};
+  getAll: async (name?: string, status: "active" | "inactive" = "active") => {
+    const params: any = { status };
+    if (name && name.trim() !== "") params.name = name;
 
     const { data } = await privateAxios.get<{ data: Service[] }>("/services", {
       params,
@@ -35,4 +36,9 @@ export const servicesService = {
       name: categoryName,
     });
   },
+
+  restore: async (id: number) => {
+    return await privateAxios.patch(`/services/${id}/restore`);
+  },
+
 };
