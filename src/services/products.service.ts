@@ -28,10 +28,27 @@ export const productsService = {
     return await privateAxios.patch(`/products/${id}/restore`);
   },
 
-  getCategories: async () => {
+  getCategories: async (status: "active" | "inactive" = "active") => {
     const { data } = await privateAxios.get<{ data: ProductCategory[] }>(
-      "/products/categories"
+      "/products/categories",
+      { params: { status } }
     );
     return data;
+  },
+
+  createCategory: async (category: { name: string }) => {
+    return await privateAxios.post("/products/category", category);
+  },
+
+  updateCategory: async (id: number, category: { name: string }) => {
+    return await privateAxios.put(`/products/category/${id}`, category);
+  },
+
+  deleteCategory: async (id: number) => {
+    return await privateAxios.delete(`/products/category/${id}`);
+  },
+
+  restoreCategory: async (id: number) => {
+    return await privateAxios.patch(`/products/category/${id}/restore`);
   },
 };
