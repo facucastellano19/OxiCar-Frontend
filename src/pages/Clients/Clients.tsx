@@ -8,8 +8,6 @@ import {
   Car,
   ChevronDown,
   ChevronUp,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import { ClientForm } from "./Components/ClientForm";
 import type {
@@ -20,6 +18,7 @@ import { clientsService } from "../../services/clients.service";
 import { handleBackendError } from "../../utilities";
 import { toast } from "sonner";
 import { PurchaseHistoryModal } from "./Components";
+import { Button, Table, Pagination } from "../../components";
 
 export const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -104,7 +103,7 @@ export const Clients = () => {
   const indexOfLastClient = currentPage * clientsPerPage;
   const indexOfFirstClient = indexOfLastClient - clientsPerPage;
   const currentClients = clients.slice(indexOfFirstClient, indexOfLastClient);
-  const totalPages = Math.ceil(clients.length / clientsPerPage);
+
 
   useEffect(() => {
     setCurrentPage(1);
@@ -121,16 +120,16 @@ return (
           <div className="h-1 w-12 bg-icy-blue mt-1"></div>
         </div>
 
-        <button
+        <Button
           onClick={() => {
             setSelectedClient(null);
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2 bg-icy-blue text-jet-black px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-icy-blue/10"
+          className="bg-icy-blue text-jet-black px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-icy-blue/10 animate-in fade-in zoom-in duration-300"
         >
-          <UserPlus size={16} />
+          <UserPlus size={20} />
           Nuevo Cliente
-        </button>
+        </Button>
       </div>
 
       <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden shadow-2xl">
@@ -148,26 +147,20 @@ return (
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
-            <thead>
-              <tr className="bg-white/[0.02] text-[10px] uppercase tracking-[0.15em] text-pale-slate font-bold">
-                <th className="px-6 py-4 border-b border-white/5 w-16 text-center">ID</th>
-                <th className="px-6 py-4 border-b border-white/5">Cliente</th>
-                <th className="px-6 py-4 border-b border-white/5">Contacto</th>
-                <th className="px-6 py-4 border-b border-white/5">Vehículos</th>
-                <th className="px-6 py-4 border-b border-white/5 text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.02]">
-              {isLoading && clients.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-20 text-center text-icy-blue animate-pulse font-bold uppercase text-xs">
-                    Cargando clientes...
-                  </td>
-                </tr>
-              ) : currentClients.length > 0 ? (
-                currentClients.map((client) => (
+        <Table
+          columns={[
+            { label: "ID", className: "w-16 text-center" },
+            { label: "Cliente", className: "text-left" },
+            { label: "Contacto", className: "text-left" },
+            { label: "Vehículos", className: "text-left" },
+            { label: "Acciones", className: "w-32 text-right" },
+          ]}
+          isLoading={isLoading && clients.length === 0}
+          isEmpty={!isLoading && clients.length === 0}
+          loadingLabel="Cargando clientes..."
+          emptyLabel="No se encontraron clientes"
+        >
+          {currentClients.map((client) => (
                   <Fragment key={client.id}>
                     <tr className="transition-colors group">
                       <td className="px-6 py-4 font-mono text-xs text-pale-slate text-center italic">#{client.id}</td>
@@ -195,15 +188,15 @@ return (
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
                           <div className="tooltip-container group/tip">
-                            <button onClick={() => handleViewHistory(client)} className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-lavender transition-all">
+                            <Button onClick={() => handleViewHistory(client)} className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-lavender hover:bg-white/5">
                               <History size={16} />
-                            </button>
+                            </Button>
                             <span className="tooltip-text uppercase">Ver Historial</span>
                           </div>
                           <div className="tooltip-container group/tip">
-                            <button onClick={() => handleEditClick(client)} className="p-2 hover:bg-white/5 rounded-md text-pale-slate hover:text-icy-blue transition-all">
+                            <Button onClick={() => handleEditClick(client)} className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-icy-blue hover:bg-white/5">
                               <Edit2 size={16} />
-                            </button>
+                            </Button>
                             <span className="tooltip-text uppercase">Editar Cliente</span>
                           </div>
                         </div>
@@ -229,44 +222,16 @@ return (
                     )}
                   </Fragment>
                 ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="py-20 text-center text-pale-slate/30 italic text-xs uppercase tracking-[0.2em]">
-                    No se encontraron clientes
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+          }
+        </Table>
 
-        <div className="px-6 py-4 border-t border-white/5 bg-white/[0.01] flex items-center justify-between">
-          <p className="text-[10px] text-pale-slate/40 uppercase font-black tracking-[0.1em]">
-            Mostrando {indexOfFirstClient + 1} - {Math.min(indexOfLastClient, clients.length)} de {clients.length} registros
-          </p>
-
-          <div className="flex items-center gap-3">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-              className="p-1.5 rounded-md border border-white/10 text-lavender hover:bg-white/5 disabled:opacity-10 disabled:cursor-not-allowed transition-all"
-            >
-              <ChevronLeft size={16} />
-            </button>
-
-            <span className="text-[10px] font-black text-icy-blue uppercase bg-icy-blue/5 px-3 py-1 rounded-full border border-icy-blue/10">
-              Página {currentPage} / {totalPages || 1}
-            </span>
-
-            <button
-              disabled={currentPage === totalPages || totalPages === 0}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              className="p-1.5 rounded-md border border-white/10 text-lavender hover:bg-white/5 disabled:opacity-10 disabled:cursor-not-allowed transition-all"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
+        <Pagination
+          className="bg-transparent border-none !rounded-none border-t border-white/5"
+          currentPage={currentPage}
+          totalItems={clients.length}
+          itemsPerPage={clientsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {/* MODAL */}
