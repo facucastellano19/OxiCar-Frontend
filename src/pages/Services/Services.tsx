@@ -4,11 +4,7 @@ import {
   Edit2,
   Trash2,
   Plus,
-  ChevronLeft,
-  ChevronRight,
   Layers,
-  Eye,
-  EyeOff,
   RotateCcw,
 } from "lucide-react";
 import { servicesService } from "../../services/services.service";
@@ -19,7 +15,7 @@ import type {
 } from "../../models/services.model";
 import { ServiceForm } from "./Components/ServicesForm";
 import { toast } from "sonner";
-import {Button,ConfirmModal} from "../../components/";
+import { Button, ConfirmModal, Pagination, Table } from "../../components/";
 
 export const Services = () => {
   /* --- MAIN STATES --- */
@@ -135,7 +131,34 @@ return (
         <div className="h-1 w-12 bg-icy-blue mt-1"></div>
       </div>
 
-      <div className="flex items-center gap-6">
+      <div className="flex justify-end">
+          {!showInactive ? (
+            <Button
+              onClick={() => { setSelectedService(null); setIsModalOpen(true); }}
+              className="bg-icy-blue text-jet-black px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-icy-blue/10 animate-in fade-in zoom-in duration-300"
+            >
+              <Plus size={20} /> Nuevo servicio
+            </Button>
+          ) : (
+            <div className="h-[36px]"></div>
+          )}
+      </div>
+    </div>
+
+    {/* --- TABLE CONTAINER --- */}
+    <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden shadow-2xl">
+      <div className="p-4 border-b border-white/5 bg-white/[0.01] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-pale-slate" size={16} />
+          <input
+            type="text"
+            placeholder="Buscar servicio..."
+            value={searchTerm}
+            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+            className="w-full bg-jet-black/50 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-xs text-lavender outline-none focus:border-icy-blue/30 transition-all"
+          />
+        </div>
+
         {/* TOGGLE */}
         <div className="flex bg-white/[0.03] border border-white/10 p-1 rounded-lg backdrop-blur-sm">
           <button
@@ -155,57 +178,22 @@ return (
             Inactivos
           </button>
         </div>
-
-        <div className="w-[140px] flex justify-end">
-          {!showInactive ? (
-            <Button
-              onClick={() => { setSelectedService(null); setIsModalOpen(true); }}
-              className="bg-icy-blue text-jet-black px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-icy-blue/10 animate-in fade-in zoom-in duration-300"
-            >
-              <Plus size={16} /> NUEVO
-            </Button>
-          ) : (
-            <div className="h-[42px]"></div>
-          )}
-        </div>
-      </div>
-    </div>
-
-    {/* --- TABLE CONTAINER --- */}
-    <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden shadow-2xl">
-      <div className="p-4 border-b border-white/5 bg-white/[0.01]">
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-pale-slate" size={16} />
-          <input
-            type="text"
-            placeholder="Buscar servicio..."
-            value={searchTerm}
-            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-            className="w-full bg-jet-black/50 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-xs text-lavender outline-none focus:border-icy-blue/30 transition-all"
-          />
-        </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm border-collapse">
-          <thead>
-            <tr className="bg-white/[0.02] text-[10px] uppercase tracking-[0.15em] text-pale-slate font-bold">
-              <th className="px-6 py-4 border-b border-white/5 w-16 text-center">ID</th>
-              <th className="px-6 py-4 border-b border-white/5">Nombre del Servicio</th>
-              <th className="px-6 py-4 border-b border-white/5">Categoría</th>
-              <th className="px-6 py-4 border-b border-white/5 text-right">Precio</th>
-              <th className="px-6 py-4 border-b border-white/5 text-right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/[0.02]">
-            {isLoading && services.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="py-20 text-center text-icy-blue animate-pulse font-bold text-xs uppercase">
-                  Sincronizando...
-                </td>
-              </tr>
-            ) : (
-              currentServices.map((service) => (
+      <Table
+        columns={[
+          { label: "ID", className: "w-16 text-center" },
+          { label: "Nombre del Servicio", className: "w-64 text-left" },
+          { label: "Categoría", className: "w-56 text-left" },
+          { label: "Precio", className: "w-48 text-left" },
+          { label: "Acciones", className: "w-32 text-right" },
+        ]}
+        isLoading={isLoading && services.length === 0}
+        isEmpty={!isLoading && services.length === 0}
+        loadingLabel="Sincronizando..."
+        emptyLabel="No se encontraron servicios"
+      >
+        {currentServices.map((service) => (
                 <tr key={service.id} className="hover:bg-white/[0.03] transition-colors group">
                   <td className="px-6 py-4 font-mono text-xs text-pale-slate text-center opacity-40 italic">#{service.id}</td>
                   <td className="px-6 py-4 font-medium text-lavender uppercase tracking-tight">{service.name}</td>
@@ -214,7 +202,7 @@ return (
                       <Layers size={12} /> {service.category_name || service.category || "General"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right font-mono font-bold text-white text-sm">
+                  <td className="px-6 py-4 text-left font-mono font-bold text-white text-sm">
                     $ {parseFloat(service.price.toString()).toLocaleString("es-AR")}
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -245,43 +233,23 @@ return (
                     </div>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+        ))}
+      </Table>
 
       {/* --- PAGINATION --- */}
-      <div className="px-6 py-4 border-t border-white/5 bg-white/[0.01] flex items-center justify-between">
-        <p className="text-[10px] text-pale-slate/40 uppercase font-black tracking-widest">
-          {services.length} Registros totales
-        </p>
-        <div className="flex items-center gap-3">
-          <Button 
-            onClick={() => setCurrentPage((p) => p - 1)} 
-            className={`p-1.5 bg-transparent border border-white/10 text-lavender hover:bg-white/5 ${currentPage === 1 ? 'opacity-10 pointer-events-none' : ''}`}
-          >
-            <ChevronLeft size={16} />
-          </Button>
-          
-          <span className="text-[10px] font-black text-icy-blue uppercase bg-icy-blue/5 px-3 py-1 rounded-full border border-icy-blue/10 font-mono">
-            {currentPage} / {totalPages || 1}
-          </span>
-
-          <Button 
-            onClick={() => setCurrentPage((p) => p + 1)} 
-            className={`p-1.5 bg-transparent border border-white/10 text-lavender hover:bg-white/5 ${currentPage === totalPages || totalPages === 0 ? 'opacity-10 pointer-events-none' : ''}`}
-          >
-            <ChevronRight size={16} />
-          </Button>
-        </div>
-      </div>
+      <Pagination
+        className="bg-transparent border-none !rounded-none border-t border-white/5"
+        currentPage={currentPage}
+        totalItems={services.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+      />
     </div>
 
     {/* --- MODALS --- */}
     {isModalOpen && (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm" onClick={() => { setIsModalOpen(false); setSelectedService(null); }}></div>
+        <div className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"></div>
         <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-2xl relative shadow-2xl animate-in zoom-in-95 duration-200">
           <h2 className="text-xl font-bold text-lavender uppercase mb-6 italic tracking-tight">
             {selectedService ? "Actualizar Servicio" : "Nuevo Servicio"}
