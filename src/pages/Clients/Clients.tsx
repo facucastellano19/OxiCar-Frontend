@@ -9,7 +9,6 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import { ClientForm } from "./Components/ClientForm";
 import type {
   Client,
   ClientForm as ClientFormType,
@@ -17,7 +16,7 @@ import type {
 import { clientsService } from "../../services/clients.service";
 import { handleBackendError } from "../../utilities";
 import { toast } from "sonner";
-import { PurchaseHistoryModal } from "./Components";
+import { ClientForm, PurchaseHistoryModal } from "./Components";
 import { Button, Table, Pagination } from "../../components";
 
 export const Clients = () => {

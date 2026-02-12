@@ -13,8 +13,7 @@ import type {
   ServiceForm as ServiceFormType,
   ServiceCategory,
 } from "../../models/services.model";
-import { ServiceForm } from "./Components/ServicesForm";
-import { CategoriesForm } from "./Components/CategoriesForm";
+import { ServiceForm, CategoriesForm } from "./Components";
 import { toast } from "sonner";
 import { handleBackendError } from "../../utilities";
 import { Button, ConfirmModal, Pagination, Table, Toggle } from "../../components/";
@@ -364,7 +363,8 @@ return (
     <ConfirmModal
       isOpen={isDeleteModalOpen}
       title={view === 'services' ? "¿DESACTIVAR SERVICIO?" : "¿DESACTIVAR CATEGORÍA?"}
-      message={`Esta acción quitará el elemento del catálogo activo.\nLo puedes reactivar en cualquier momento.`}
+      message={`Esta acción quitará el elemento del catálogo activo.
+        \nLo puedes reactivar en cualquier momento.`}
       onConfirm={confirmDelete}
       onCancel={() => { setIsDeleteModalOpen(false); setServiceToDelete(null); }}
     />
