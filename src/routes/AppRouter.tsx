@@ -4,6 +4,7 @@ import { AuthGuard } from "../guards/auth.guards"
 import { MainLayout } from "../components/"
 import {Services, Home, Login, Clients} from "../pages/"
 import { Products } from "../pages/Products/Products"
+import { Employees } from "../pages/Employees/Employees"
 
 
 export const AppRouter = () => {
@@ -18,6 +19,7 @@ export const AppRouter = () => {
       <Route path={PrivateRoutes.CLIENTS} element={<Clients />} />   
       <Route path={PrivateRoutes.SERVICES} element={<Services />} />  
       <Route path={PrivateRoutes.PRODUCTS} element={<Products />} />  
+      <Route path={PrivateRoutes.EMPLOYEES} element={<Employees />} />        
       
     </Route>
   </Route>

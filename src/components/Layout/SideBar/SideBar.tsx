@@ -35,10 +35,10 @@ export const Sidebar = () => {
     <aside className="w-64 h-screen bg-jet-black border-r border-white/[0.05] flex flex-col p-6">
       <div className="flex items-center gap-3 mb-10 px-2">
         <div className="w-9 h-9 bg-icy-blue rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(165,216,255,0.15)]">
-          <span className="text-jet-black font-black italic text-sm tracking-tighter">NC</span>
+          <span className="text-jet-black font-black italic text-sm tracking-tighter">OC</span>
         </div>
         <div className="flex flex-col">
-          <span className="text-lavender font-bold tracking-tight text-sm leading-none uppercase">NC Detailing</span>
+          <span className="text-lavender font-bold tracking-tight text-sm leading-none uppercase">Taller automovil</span>
           <span className="text-pale-slate text-[9px] font-bold tracking-[0.2em] uppercase mt-1">Admin Panel</span>
         </div>
       </div>
