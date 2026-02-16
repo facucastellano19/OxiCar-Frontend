@@ -5,3 +5,4 @@ export * from './clients.model';
 export * from './services.model';
 export * from './products.model';
 export * from './employees.model';
+export * from './sales.model'

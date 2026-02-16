@@ -1,0 +1,386 @@
+import { useState, useEffect, useCallback } from "react";
+import { Plus, Search, Wrench, Calendar, Eye, RotateCcw } from "lucide-react";
+import { Button, Table, Toggle, Pagination } from "../../components/";
+import { useApi } from "../../hooks";
+import { salesService } from "../../services/";
+import { type Sale } from "../../models/sales.model";
+import { ProductSaleForm } from "./Components/ProductSaleForm";
+//import { ServiceSaleForm } from "./Components/ServiceSaleForm";
+import { toast } from "sonner";
+import { handleBackendError } from "../../utilities";
+
+export const Sales = () => {
+  const [view, setView] = useState<"products" | "services">("products");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState("");
+  const [serviceStatus, setServiceStatus] = useState("");
+
+  // --- Modal control states ---
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
+
+  // --- Pagination States ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const {
+    loading: loadingProducts,
+    data: productsData,
+    fetch: fetchProducts,
+  } = useApi(salesService.getProductsSales);
+
+  const {
+    loading: loadingServices,
+    data: servicesData,
+    fetch: fetchServices,
+  } = useApi(salesService.getServicesSales);
+
+  const loadData = useCallback(() => {
+    const params = {
+      clientName: searchTerm || undefined,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
+      paymentStatusId: paymentStatus ? Number(paymentStatus) : undefined,
+      serviceStatusId:
+        view === "services" && serviceStatus
+          ? Number(serviceStatus)
+          : undefined,
+    };
+
+    if (view === "products") fetchProducts(params);
+    else fetchServices(params);
+  }, [
+    view,
+    searchTerm,
+    startDate,
+    endDate,
+    paymentStatus,
+    serviceStatus,
+    fetchProducts,
+    fetchServices,
+  ]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // --- Unified save logic ---
+  const handleSaveSale = async (data: any) => {
+    try {
+      if (view === "products") {
+        await salesService.postProductSale(data).call;
+      } else {
+        await salesService.postServiceSale(data).call;
+      }
+
+      toast.success("¡Venta registrada con éxito!");
+      setIsProductModalOpen(false);
+      setIsServiceModalOpen(false);
+      loadData();
+    } catch (e) {
+      toast.error(handleBackendError(e));
+    }
+  };
+
+  const rawData =
+    view === "products" ? productsData?.data || [] : servicesData?.data || [];
+  const isLoading = view === "products" ? loadingProducts : loadingServices;
+
+  // Pagination logic
+  const totalItems = rawData.length;
+  const currentData = rawData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+
+  return (
+    <div className="space-y-6 animate-in fade-in duration-500">
+      {/* HEADER */}
+      <div className="flex justify-between items-end">
+        <div>
+          <h1 className="text-2xl font-bold text-lavender tracking-tight uppercase italic font-black">
+            Control de Ventas
+          </h1>
+          <div className="h-1 w-12 bg-icy-blue mt-1"></div>
+        </div>
+
+        <div className="flex gap-3">
+          <Button
+            onClick={() => setIsServiceModalOpen(true)}
+            className="bg-white/5 text-lavender border border-white/10 hover:bg-white/10 px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all"
+          >
+            <Wrench size={16} className="mr-2 text-icy-blue" /> Venta Servicio
+          </Button>
+          <Button
+            onClick={() => setIsProductModalOpen(true)}
+            className="bg-icy-blue text-jet-black px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-icy-blue/10 animate-in fade-in zoom-in duration-300"
+          >
+            <Plus size={18} className="mr-2" /> Venta Producto
+          </Button>
+        </div>
+      </div>
+
+      {/* FILTERS & TABLE CARD */}
+      <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden shadow-2xl">
+        <div className="p-4 border-b border-white/5 bg-white/[0.01] space-y-6">
+          <div className="flex flex-col lg:flex-row justify-between gap-4 items-end">
+            <div className="flex flex-wrap gap-4 items-end">
+              {/* SEARCH */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-lavender/40 uppercase tracking-widest ml-1">
+                  Cliente
+                </label>
+                <div className="relative w-full md:w-64">
+                  <Search
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-pale-slate"
+                    size={16}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Buscar cliente..."
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="w-full bg-jet-black/50 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-xs text-lavender outline-none focus:border-icy-blue/30 transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* DATE FILTERS */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-lavender/40 uppercase tracking-widest ml-1">
+                  Desde
+                </label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="bg-jet-black/50 border border-white/10 rounded-lg py-2 px-3 text-[11px] text-lavender outline-none focus:border-icy-blue/30 transition-all w-36 custom-scrollbar"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-lavender/40 uppercase tracking-widest ml-1">
+                  Hasta
+                </label>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="bg-jet-black/50 border border-white/10 rounded-lg py-2 px-3 text-[11px] text-lavender outline-none focus:border-icy-blue/30 transition-all w-36"
+                />
+              </div>
+
+              {(startDate || endDate) && (
+                <Button
+                  onClick={() => {
+                    setStartDate("");
+                    setEndDate("");
+                  }}
+                  className="p-2 bg-white/5 border-none text-red-400 hover:bg-red-500/10 mb-[2px] shadow-none"
+                >
+                  <RotateCcw size={14} />
+                </Button>
+              )}
+            </div>
+
+            {/* VIEW TOGGLE */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-black text-lavender/40 uppercase tracking-widest ml-1 text-right">
+                Vista
+              </label>
+              <Toggle
+                value={view}
+                onChange={(val) => {
+                  setView(val as any);
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { label: "Productos", value: "products" },
+                  { label: "Servicios", value: "services" },
+                ]}
+              />
+            </div>
+          </div>
+
+          {/* STATUS SELECTORS */}
+          <div className="flex flex-wrap gap-3 items-center border-t border-white/5 pt-4">
+            <select
+              value={paymentStatus}
+              onChange={(e) => {
+                setPaymentStatus(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="bg-jet-black/50 border border-white/10 rounded-lg py-1.5 px-3 text-[10px] text-lavender outline-none focus:border-icy-blue/30 appearance-none cursor-pointer"
+            >
+              <option value="">Estado Pago (Todos)</option>
+              <option value="1">Pendiente</option>
+              <option value="2">Completado</option>
+              <option value="3">Cancelado</option>
+            </select>
+            {view === "services" && (
+              <select
+                value={serviceStatus}
+                onChange={(e) => {
+                  setServiceStatus(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="bg-jet-black/50 border border-white/10 rounded-lg py-1.5 px-3 text-[10px] text-lavender outline-none focus:border-icy-blue/30 appearance-none cursor-pointer"
+              >
+                <option value="">Estado Servicio (Todos)</option>
+                <option value="1">Pendiente</option>
+                <option value="2">En Progreso</option>
+                <option value="3">Completado</option>
+              </select>
+            )}
+          </div>
+        </div>
+
+        <Table
+          columns={
+            view === "products"
+              ? [
+                  { label: "ID", className: "w-20 text-left pl-6" },
+                  { label: "Cliente", className: "w-64 text-left" },
+                  { label: "Detalle", className: "w-40 text-left" },
+                  { label: "Total", className: "w-40 text-left" },
+                  { label: "Método Pago", className: "w-40 text-left" },
+                  { label: "Estado Pago", className: "w-40 text-left" },
+                  { label: "Fecha", className: "w-48 text-left" },
+                  { label: "Acciones", className: "w-24 text-right pr-6" },
+                ]
+              : [
+                  { label: "ID", className: "w-20 text-left pl-6" },
+                  { label: "Cliente", className: "w-56 text-left" },
+                  { label: "Detalles", className: "w-40 text-left" },
+                  { label: "Total $", className: "w-40 text-left" },
+                  { label: "Método Pago", className: "w-40 text-left" },
+                  { label: "Estado Pago", className: "w-40 text-left" },
+                  { label: "Estado Servicio", className: "w-40 text-left" },
+                  { label: "Fecha", className: "w-48 text-left" },
+                  { label: "Acciones", className: "w-24 text-right pr-6" },
+                ]
+          }
+          isLoading={isLoading}
+          isEmpty={!isLoading && currentData.length === 0}
+        >
+          {currentData.map((sale: Sale) => (
+            <tr
+              key={sale.sale_id}
+              className="group transition-colors hover:bg-white/[0.01]"
+            >
+              <td className="px-6 py-4 font-mono text-xs text-pale-slate opacity-40 italic">
+                #{sale.sale_id}
+              </td>
+              <td className="px-6 py-4 text-xs font-bold text-lavender uppercase">
+                {sale.client_name}
+              </td>
+              <td className="px-6 py-4 text-[10px] text-pale-slate uppercase italic">
+                {view === "products"
+                  ? `${sale.products?.length || 0} Prod.`
+                  : `${sale.services?.length || 0} Serv.`}
+              </td>
+              <td className="px-6 py-4 font-mono font-bold text-white text-xs">
+                ${" "}
+                {parseFloat(sale.sale_total.toString()).toLocaleString("es-AR")}
+              </td>
+              <td className="px-6 py-4 text-[10px] text-pale-slate uppercase italic">
+                {sale.payment_method}
+              </td>
+              <td className="px-6 py-4">
+                <span
+                  className={`text-[9px] font-black px-2 py-0.5 rounded border ${
+                    sale.payment_status === "Pagado" ||
+                    sale.payment_status === "Completado"
+                      ? "bg-green-500/10 text-green-400 border-green-500/20"
+                      : sale.payment_status === "Cancelado"
+                        ? "bg-red-500/10 text-red-400 border-red-500/20"
+                        : "bg-orange-500/10 text-orange-400 border-orange-500/20"
+                  }`}
+                >
+                  {" "}
+                  {sale.payment_status}{" "}
+                </span>
+              </td>
+              {view === "services" && (
+                <td className="px-6 py-4">
+                  <span
+                    className={`text-[9px] font-black px-2 py-0.5 rounded border ${
+                      sale.service_status === "Completado"
+                        ? "bg-icy-blue/10 text-icy-blue border-icy-blue/20"
+                        : "bg-white/5 text-pale-slate border-white/10"
+                    }`}
+                  >
+                    {" "}
+                    {sale.service_status}{" "}
+                  </span>
+                </td>
+              )}
+              <td className="px-6 py-4 text-[10px] text-pale-slate font-mono uppercase">
+                {new Date(sale.created_at).toLocaleString("es-AR", {
+                  dateStyle: "short",
+                  timeStyle: "short",
+                })}
+              </td>
+              <td className="px-6 py-4 text-right pr-6">
+                <Button className="p-2 bg-transparent border-none text-pale-slate hover:text-icy-blue hover:bg-white/5 shadow-none transition-all">
+                  <Eye size={18} />
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </Table>
+
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+
+      {/* MODALS */}
+      {isProductModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"
+            onClick={() => setIsProductModalOpen(false)}
+          ></div>
+          <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-3xl relative shadow-2xl animate-in zoom-in-95 duration-200 custom-scrollbar overflow-y-auto max-h-[90vh]">
+            <h2 className="text-xl font-bold text-lavender uppercase mb-6 italic tracking-tight">
+              Nueva Venta de Productos
+            </h2>
+            <ProductSaleForm
+              onCancel={() => setIsProductModalOpen(false)}
+              onSubmit={handleSaveSale}
+            />
+          </div>
+        </div>
+      )}
+
+      {isServiceModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"
+            onClick={() => setIsServiceModalOpen(false)}
+          ></div>
+          <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-3xl relative shadow-2xl animate-in zoom-in-95 duration-200 custom-scrollbar overflow-y-auto max-h-[90vh]">
+            <h2 className="text-xl font-bold text-lavender uppercase mb-6 italic tracking-tight">
+              Nueva Venta de Servicios
+            </h2>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

@@ -42,7 +42,9 @@ export const productSchema = z.object({
     .refine((val) => isNaN(val) || Number.isInteger(val), {
       message: "El stock debe ser un número entero",
     })
-    .refine((val) => isNaN(val) || val >= 0, { message: "El stock no puede ser negativo" }),
+    .refine((val) => isNaN(val) || val >= 0, {
+      message: "El stock no puede ser negativo",
+    }),
   min_stock: z
     .number()
     .or(z.nan())
