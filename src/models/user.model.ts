@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const LoginSchema = z.object({
   username: z.string().min(1, "El usuario es obligatorio"),
@@ -6,7 +6,6 @@ export const LoginSchema = z.object({
 });
 
 export type LoginForm = z.infer<typeof LoginSchema>;
-
 
 export interface User {
   id: number;
@@ -17,4 +16,8 @@ export interface User {
 export interface UserInfo {
   login: boolean;
   token: string;
+  id: number;
+  username: string;
+  role_id: number;
+  name?: string;
 }

@@ -1,10 +1,11 @@
-import { create } from 'zustand';
-import type { UserInfo } from '../models/user.model';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import type { UserInfo } from "../models/user.model";
+import { persist } from "zustand/middleware";
 
 interface UserState {
-  isLogged: boolean; 
+  isLogged: boolean;
   token: string | null;
+  userInfo: UserInfo | null;
   setUserInfo: (data: UserInfo) => void;
   resetUser: () => void;
 }
@@ -14,14 +15,22 @@ export const useUserStore = create<UserState>()(
     (set) => ({
       isLogged: false,
       token: null,
-      setUserInfo: (data) => set({ isLogged: data.login, token: data.token }),
+      userInfo: null,
+
+      setUserInfo: (data) =>
+        set({
+          isLogged: data.login,
+          token: data.token,
+          userInfo: data,
+        }),
+
       resetUser: () => {
-        set({ isLogged: false, token: null });
-        localStorage.removeItem('user-storage'); 
+        set({ isLogged: false, token: null, userInfo: null });
+        localStorage.removeItem("user-storage");
       },
     }),
     {
-      name: 'user-storage', 
-    }
-  )
+      name: "user-storage",
+    },
+  ),
 );
