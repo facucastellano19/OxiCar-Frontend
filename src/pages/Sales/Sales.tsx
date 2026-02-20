@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Plus, Search, Wrench, Calendar, Eye, RotateCcw } from "lucide-react";
 import { Button, Table, Toggle, Pagination } from "../../components/";
 import { useApi } from "../../hooks";
@@ -8,6 +8,7 @@ import { ProductSaleForm } from "./Components/ProductSaleForm";
 //import { ServiceSaleForm } from "./Components/ServiceSaleForm";
 import { toast } from "sonner";
 import { handleBackendError } from "../../utilities";
+import { ServiceSaleForm } from "./Components/ServiceSaleForm";
 
 export const Sales = () => {
   const [view, setView] = useState<"products" | "services">("products");
@@ -67,22 +68,33 @@ export const Sales = () => {
   }, [loadData]);
 
   // --- Unified save logic ---
-  const handleSaveSale = async (data: any) => {
-    try {
-      if (view === "products") {
+  const handleProductSubmit = useCallback(
+    async (data: any) => {
+      try {
         await salesService.postProductSale(data).call;
-      } else {
-        await salesService.postServiceSale(data).call;
+        toast.success("¡Venta de producto registrada con éxito!");
+        setIsProductModalOpen(false);
+        loadData();
+      } catch (e) {
+        toast.error(handleBackendError(e));
       }
+    },
+    [loadData],
+  );
 
-      toast.success("¡Venta registrada con éxito!");
-      setIsProductModalOpen(false);
-      setIsServiceModalOpen(false);
-      loadData();
-    } catch (e) {
-      toast.error(handleBackendError(e));
-    }
-  };
+  const handleServiceSubmit = useCallback(
+    async (data: any) => {
+      try {
+        await salesService.postServiceSale(data).call;
+        toast.success("¡Venta de servicio registrada con éxito!");
+        setIsServiceModalOpen(false);
+        loadData();
+      } catch (e) {
+        toast.error(handleBackendError(e));
+      }
+    },
+    [loadData],
+  );
 
   const rawData =
     view === "products" ? productsData?.data || [] : servicesData?.data || [];
@@ -90,10 +102,10 @@ export const Sales = () => {
 
   // Pagination logic
   const totalItems = rawData.length;
-  const currentData = rawData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
+  const currentData = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return rawData.slice(start, start + itemsPerPage);
+  }, [rawData, currentPage, itemsPerPage]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -196,8 +208,8 @@ export const Sales = () => {
 
             {/* VIEW TOGGLE */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-black text-lavender/40 uppercase tracking-widest ml-1 text-right">
-                Vista
+              <label className="text-[10px] font-black text-lavender/40 uppercase tracking-widest ml-1">
+                VENTAS DE:
               </label>
               <Toggle
                 value={view}
@@ -352,17 +364,14 @@ export const Sales = () => {
       {/* MODALS */}
       {isProductModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"
-            onClick={() => setIsProductModalOpen(false)}
-          ></div>
+          <div className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"></div>
           <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-3xl relative shadow-2xl animate-in zoom-in-95 duration-200 custom-scrollbar overflow-y-auto max-h-[90vh]">
             <h2 className="text-xl font-bold text-lavender uppercase mb-6 italic tracking-tight">
               Nueva Venta de Productos
             </h2>
             <ProductSaleForm
               onCancel={() => setIsProductModalOpen(false)}
-              onSubmit={handleSaveSale}
+              onSubmit={handleProductSubmit}
             />
           </div>
         </div>
@@ -370,14 +379,19 @@ export const Sales = () => {
 
       {isServiceModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"
-            onClick={() => setIsServiceModalOpen(false)}
-          ></div>
+          {/* Background overlay */}
+          <div className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"></div>
+
+          {/* Modal Content Container */}
           <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-3xl relative shadow-2xl animate-in zoom-in-95 duration-200 custom-scrollbar overflow-y-auto max-h-[90vh]">
             <h2 className="text-xl font-bold text-lavender uppercase mb-6 italic tracking-tight">
               Nueva Venta de Servicios
             </h2>
+
+            <ServiceSaleForm
+              onCancel={() => setIsServiceModalOpen(false)}
+              onSubmit={handleServiceSubmit}
+            />
           </div>
         </div>
       )}

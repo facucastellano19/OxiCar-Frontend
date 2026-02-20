@@ -88,3 +88,32 @@ export const productSaleSchema = z.object({
     )
     .min(1, "Debe agregar al menos un producto"),
 });
+
+export const serviceSaleSchema = z.object({
+  client_id: z
+    .number()
+    .or(z.nan())
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Debe seleccionar un cliente",
+    }),
+  vehicle_id: z
+    .number()
+    .or(z.nan())
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Debe seleccionar un vehículo",
+    }),
+  payment_method_id: z
+    .number()
+    .or(z.nan())
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Seleccione un método de pago",
+    }),
+  observations: z.string().optional(),
+  services: z
+    .array(
+      z.object({
+        service_id: z.number().min(1, "ID de servicio inválido"),
+      }),
+    )
+    .min(1, "Debe agregar al menos un servicio"),
+});

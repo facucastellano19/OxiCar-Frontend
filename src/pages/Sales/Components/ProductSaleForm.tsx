@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Trash2,
   Plus,
@@ -189,10 +189,27 @@ export const ProductSaleForm = ({ onCancel, onSubmit }: Props) => {
     onSubmit(payload);
   };
 
-  const total = cart.reduce(
-    (acc, item) => acc + item.product.price * item.quantity,
-    0,
-  );
+  // --- Optimizations ---
+  const filteredClients = useMemo(() => {
+    const lowerSearch = clientSearch.toLowerCase();
+    return clients.filter((c) =>
+      `${c.first_name} ${c.last_name}`.toLowerCase().includes(lowerSearch),
+    );
+  }, [clients, clientSearch]);
+
+  const filteredProducts = useMemo(() => {
+    const lowerSearch = productSearch.toLowerCase();
+    return products.filter(
+      (p) => p.name.toLowerCase().includes(lowerSearch) && p.stock > 0,
+    );
+  }, [products, productSearch]);
+
+  const total = useMemo(() => {
+    return cart.reduce(
+      (acc, item) => acc + item.product.price * item.quantity,
+      0,
+    );
+  }, [cart]);
 
   return (
     <div className="space-y-6">
@@ -228,22 +245,16 @@ export const ProductSaleForm = ({ onCancel, onSubmit }: Props) => {
 
           {isClientListOpen && (
             <div className="absolute top-[105%] left-0 w-full bg-jet-black border border-white/10 rounded-lg shadow-2xl z-[100] max-h-48 overflow-y-auto custom-scrollbar animate-in fade-in zoom-in-95 duration-200">
-              {clients
-                .filter((c) =>
-                  `${c.first_name} ${c.last_name}`
-                    .toLowerCase()
-                    .includes(clientSearch.toLowerCase()),
-                )
-                .map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => handleSelectClient(c)}
-                    className="w-full text-left px-4 py-2.5 text-xs text-pale-slate hover:bg-icy-blue hover:text-jet-black transition-colors border-b border-white/5 uppercase font-bold"
-                  >
-                    {c.first_name} {c.last_name}
-                  </button>
-                ))}
+              {filteredClients.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => handleSelectClient(c)}
+                  className="w-full text-left px-4 py-2.5 text-xs text-pale-slate hover:bg-icy-blue hover:text-jet-black transition-colors border-b border-white/5 uppercase font-bold"
+                >
+                  {c.first_name} {c.last_name}
+                </button>
+              ))}
             </div>
           )}
         </div>
@@ -317,26 +328,19 @@ export const ProductSaleForm = ({ onCancel, onSubmit }: Props) => {
             </div>
             {isProductListOpen && (
               <div className="absolute top-[105%] left-0 w-full bg-jet-black border border-white/10 rounded-lg shadow-2xl z-[100] max-h-48 overflow-y-auto custom-scrollbar animate-in fade-in zoom-in-95 duration-200">
-                {products
-                  .filter(
-                    (p) =>
-                      p.name
-                        .toLowerCase()
-                        .includes(productSearch.toLowerCase()) && p.stock > 0,
-                  )
-                  .map((p) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => handleSelectProduct(p)}
-                      className="w-full text-left px-4 py-2.5 text-xs text-pale-slate hover:bg-icy-blue hover:text-jet-black transition-colors border-b border-white/5 uppercase font-bold"
-                    >
-                      {p.name} - ${p.price}{" "}
-                      <span className="opacity-40 ml-2 font-mono text-[10px]">
-                        (Stock: {p.stock})
-                      </span>
-                    </button>
-                  ))}
+                {filteredProducts.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => handleSelectProduct(p)}
+                    className="w-full text-left px-4 py-2.5 text-xs text-pale-slate hover:bg-icy-blue hover:text-jet-black transition-colors border-b border-white/5 uppercase font-bold"
+                  >
+                    {p.name} - ${p.price}{" "}
+                    <span className="opacity-40 ml-2 font-mono text-[10px]">
+                      (Stock: {p.stock})
+                    </span>
+                  </button>
+                ))}
               </div>
             )}
           </div>
@@ -384,7 +388,7 @@ export const ProductSaleForm = ({ onCancel, onSubmit }: Props) => {
         </div>
 
         {/* CART TABLE */}
-        <div className="border border-white/5 rounded-lg overflow-hidden bg-jet-black/20">
+        <div className="border border-white/5 rounded-lg bg-jet-black/20 h-[250px] overflow-y-auto custom-scrollbar">
           <Table
             columns={[
               { label: "Producto", className: "pl-6" },
@@ -393,6 +397,7 @@ export const ProductSaleForm = ({ onCancel, onSubmit }: Props) => {
               { label: "", className: "pr-6" },
             ]}
             isEmpty={cart.length === 0}
+            emptyLabel="No hay productos seleccionados"
           >
             {cart.map((item) => (
               <tr
