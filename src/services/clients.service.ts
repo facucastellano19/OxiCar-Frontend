@@ -3,6 +3,7 @@ import type {
   Client,
   ClientsResponse,
   HistoryResponse,
+  Vehicle,
 } from "../models/clients.model";
 import { privateAxios } from "./axios.service";
 
@@ -19,7 +20,10 @@ export const clientsService = {
     return data;
   },
 
-  update: async (id: number, clientData: ClientForm,): Promise<ClientsResponse> => {
+  update: async (
+    id: number,
+    clientData: ClientForm,
+  ): Promise<ClientsResponse> => {
     const { data } = await privateAxios.put<ClientsResponse>(
       `/clients/${id}`,
       clientData,
@@ -27,10 +31,19 @@ export const clientsService = {
     return data;
   },
 
-  getPurchaseHistory: async (clientId: number): Promise<HistoryResponse['data']> => {
+  getPurchaseHistory: async (
+    clientId: number,
+  ): Promise<HistoryResponse["data"]> => {
     const { data } = await privateAxios.get<HistoryResponse>(
       `/clients/${clientId}/history`,
     );
     return data.data;
-  }
+  },
+
+  getVehicles: async (clientId: number): Promise<Vehicle[]> => {
+    const { data } = await privateAxios.get<{ data: Vehicle[] }>(
+      `/clients/${clientId}/vehicles`,
+    );
+    return data.data;
+  },
 };

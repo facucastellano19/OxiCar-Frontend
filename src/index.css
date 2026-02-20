@@ -25,3 +25,36 @@
   @apply absolute top-full left-1/2 -translate-x-1/2 
          border-8 border-transparent border-t-jet-black;
 }
+
+/* --- Global Custom Scrollbar Styling --- */
+
+/* Standard for Chrome, Edge, and Safari */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Vertical bar width */
+  height: 6px; /* Horizontal bar height */
+}
+
+/* The track (background) of the scrollbar */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+/* The handle (thumb) that you drag */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1); /* Very subtle grey */
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
+/* Handle color on hover */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25); /* Brightens when hovering */
+}
+
+/* Firefox support (simplified) */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) rgba(0, 0, 0, 0.2);
+}

@@ -16,6 +16,8 @@ export const vehicleSchema = z.object({
   deleted: z.boolean().optional(),
 });
 
+export type Vehicle = z.infer<typeof vehicleSchema>;
+
 export const clientSchema = z.object({
   first_name: z.string().min(1, "El nombre es obligatorio"),
   last_name: z.string().min(1, "El apellido es obligatorio"),
@@ -59,7 +61,12 @@ export interface ProductHistory {
   sale_id: number;
   created_at: string;
   sale_total: string;
-  products: { name: string; quantity: number; unit_price: string; subtotal: string }[];
+  products: {
+    name: string;
+    quantity: number;
+    unit_price: string;
+    subtotal: string;
+  }[];
 }
 
 export interface HistoryResponse {
