@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { AlertCircle } from "lucide-react";
 
 interface Props {
@@ -6,6 +7,8 @@ interface Props {
   message: string;
   onConfirm: () => void;
   onCancel: () => void;
+  confirmText?: string;
+  cancelText?: string;
 }
 
 export const ConfirmModal = ({
@@ -14,14 +17,16 @@ export const ConfirmModal = ({
   message,
   onConfirm,
   onCancel,
+  confirmText = "Sí, Desactivar",
+  cancelText = "Cancelar",
 }: Props) => {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* --- BACKDROP WITH BLUR (Clean & Dark) --- */}
       <div
-        className="absolute inset-0 bg-jet-black/80 backdrop-blur-sm animate-in fade-in duration-300"
+        className="absolute inset-0 bg-jet-black/40 backdrop-blur-md animate-in fade-in duration-300"
         onClick={onCancel}
       ></div>
 
@@ -44,17 +49,18 @@ export const ConfirmModal = ({
               onClick={onCancel}
               className="px-4 py-2 text-[10px] font-black text-pale-slate hover:text-white uppercase tracking-widest transition-all"
             >
-              Cancelar
+              {cancelText}
             </button>
             <button
               onClick={onConfirm}
               className="bg-icy-blue text-jet-black px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-white hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-icy-blue/5"
             >
-              Sí, Desactivar
+              {confirmText}
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };

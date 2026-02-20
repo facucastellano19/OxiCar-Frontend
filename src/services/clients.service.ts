@@ -41,9 +41,9 @@ export const clientsService = {
   },
 
   getVehicles: async (clientId: number): Promise<Vehicle[]> => {
-    const { data } = await privateAxios.get<{ data: Vehicle[] } | Vehicle[]>(
+    const { data } = await privateAxios.get<{ data: Vehicle[] }>(
       `/clients/${clientId}/vehicles`,
     );
-    return data.data || data;
+    return data.data;
   },
 };

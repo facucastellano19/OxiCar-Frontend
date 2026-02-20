@@ -1,5 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Plus, Search, Wrench, Calendar, Eye, RotateCcw } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Wrench,
+  Calendar,
+  Eye,
+  RotateCcw,
+  DollarSign,
+  Activity,
+} from "lucide-react";
 import { Button, Table, Toggle, Pagination } from "../../components/";
 import { useApi } from "../../hooks";
 import { salesService } from "../../services/";
@@ -9,6 +18,9 @@ import { ProductSaleForm } from "./Components/ProductSaleForm";
 import { toast } from "sonner";
 import { handleBackendError } from "../../utilities";
 import { ServiceSaleForm } from "./Components/ServiceSaleForm";
+import { SaleDetailsModal } from "./Components/SaleDetailsModal";
+import { PaymentStatusModal } from "./Components/PaymentStatusModal";
+import { ServiceStatusModal } from "./Components/ServiceStatusModal";
 
 export const Sales = () => {
   const [view, setView] = useState<"products" | "services">("products");
@@ -21,6 +33,11 @@ export const Sales = () => {
   // --- Modal control states ---
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isServiceStatusModalOpen, setIsServiceStatusModalOpen] =
+    useState(false);
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
   // --- Pagination States ---
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,6 +113,21 @@ export const Sales = () => {
     [loadData],
   );
 
+  const handleViewDetails = (sale: Sale) => {
+    setSelectedSale(sale);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handlePaymentClick = (sale: Sale) => {
+    setSelectedSale(sale);
+    setIsPaymentModalOpen(true);
+  };
+
+  const handleServiceStatusClick = (sale: Sale) => {
+    setSelectedSale(sale);
+    setIsServiceStatusModalOpen(true);
+  };
+
   const rawData =
     view === "products" ? productsData?.data || [] : servicesData?.data || [];
   const isLoading = view === "products" ? loadingProducts : loadingServices;
@@ -106,6 +138,22 @@ export const Sales = () => {
     const start = (currentPage - 1) * itemsPerPage;
     return rawData.slice(start, start + itemsPerPage);
   }, [rawData, currentPage, itemsPerPage]);
+
+  // Helpers para deshabilitar botones
+  const isPaymentModifiable = (status: string) => {
+    const s = status?.toLowerCase() || "";
+    // Si está pagado o cancelado, no se puede modificar
+    return !(
+      s.includes("pagado") ||
+      s.includes("completado") ||
+      s.includes("cancelado")
+    );
+  };
+
+  const isServiceModifiable = (status: string) => {
+    const s = status?.toLowerCase() || "";
+    return !(s.includes("completado") || s.includes("cancelado"));
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -119,18 +167,22 @@ export const Sales = () => {
         </div>
 
         <div className="flex gap-3">
-          <Button
-            onClick={() => setIsServiceModalOpen(true)}
-            className="bg-white/5 text-lavender border border-white/10 hover:bg-white/10 px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all"
-          >
-            <Wrench size={16} className="mr-2 text-icy-blue" /> Venta Servicio
-          </Button>
-          <Button
-            onClick={() => setIsProductModalOpen(true)}
-            className="bg-icy-blue text-jet-black px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-icy-blue/10 animate-in fade-in zoom-in duration-300"
-          >
-            <Plus size={18} className="mr-2" /> Venta Producto
-          </Button>
+          {view === "services" && (
+            <Button
+              onClick={() => setIsServiceModalOpen(true)}
+              className="bg-icy-blue text-jet-black px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-icy-blue/10 animate-in fade-in zoom-in duration-300"
+            >
+              <Plus size={18} className="mr-2" /> Venta Servicio
+            </Button>
+          )}
+          {view === "products" && (
+            <Button
+              onClick={() => setIsProductModalOpen(true)}
+              className="bg-icy-blue text-jet-black px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-icy-blue/10 animate-in fade-in zoom-in duration-300"
+            >
+              <Plus size={18} className="mr-2" /> Venta Producto
+            </Button>
+          )}
         </div>
       </div>
 
@@ -269,7 +321,7 @@ export const Sales = () => {
                   { label: "Método Pago", className: "w-40 text-left" },
                   { label: "Estado Pago", className: "w-40 text-left" },
                   { label: "Fecha", className: "w-48 text-left" },
-                  { label: "Acciones", className: "w-24 text-right pr-6" },
+                  { label: "Acciones", className: "w-32 text-right pr-6" },
                 ]
               : [
                   { label: "ID", className: "w-20 text-left pl-6" },
@@ -280,7 +332,7 @@ export const Sales = () => {
                   { label: "Estado Pago", className: "w-40 text-left" },
                   { label: "Estado Servicio", className: "w-40 text-left" },
                   { label: "Fecha", className: "w-48 text-left" },
-                  { label: "Acciones", className: "w-24 text-right pr-6" },
+                  { label: "Acciones", className: "w-32 text-right pr-6" },
                 ]
           }
           isLoading={isLoading}
@@ -345,9 +397,32 @@ export const Sales = () => {
                 })}
               </td>
               <td className="px-6 py-4 text-right pr-6">
-                <Button className="p-2 bg-transparent border-none text-pale-slate hover:text-icy-blue hover:bg-white/5 shadow-none transition-all">
-                  <Eye size={18} />
-                </Button>
+                <div className="flex justify-end gap-1">
+                  <Button
+                    onClick={() => handleViewDetails(sale)}
+                    className="p-2 bg-transparent border-none text-pale-slate hover:text-white hover:bg-white/5 shadow-none transition-all"
+                  >
+                    <Eye size={16} />
+                  </Button>
+
+                  <Button
+                    onClick={() => handlePaymentClick(sale)}
+                    disabled={!isPaymentModifiable(sale.payment_status)}
+                    className="p-2 bg-transparent border-none text-pale-slate hover:text-green-400 hover:bg-green-500/10 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-pale-slate shadow-none transition-all"
+                  >
+                    <DollarSign size={16} />
+                  </Button>
+
+                  {view === "services" && (
+                    <Button
+                      onClick={() => handleServiceStatusClick(sale)}
+                      disabled={!isServiceModifiable(sale.service_status || "")}
+                      className="p-2 bg-transparent border-none text-pale-slate hover:text-icy-blue hover:bg-icy-blue/10 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-pale-slate shadow-none transition-all"
+                    >
+                      <Wrench size={16} />
+                    </Button>
+                  )}
+                </div>
               </td>
             </tr>
           ))}
@@ -391,6 +466,47 @@ export const Sales = () => {
             <ServiceSaleForm
               onCancel={() => setIsServiceModalOpen(false)}
               onSubmit={handleServiceSubmit}
+            />
+          </div>
+        </div>
+      )}
+
+      {isDetailsModalOpen && selectedSale && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"></div>
+          <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-3xl relative shadow-2xl animate-in zoom-in-95 duration-200 custom-scrollbar overflow-y-auto max-h-[90vh]">
+            <h2 className="text-xl font-bold text-lavender uppercase mb-6 italic tracking-tight">
+              Detalle de Venta #{selectedSale.sale_id}
+            </h2>
+            <SaleDetailsModal
+              sale={selectedSale}
+              onClose={() => setIsDetailsModalOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {isPaymentModalOpen && selectedSale && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"></div>
+          <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-md relative shadow-2xl animate-in zoom-in-95 duration-200">
+            <PaymentStatusModal
+              sale={selectedSale}
+              onClose={() => setIsPaymentModalOpen(false)}
+              onUpdate={loadData}
+            />
+          </div>
+        </div>
+      )}
+
+      {isServiceStatusModalOpen && selectedSale && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-jet-black/90 backdrop-blur-sm"></div>
+          <div className="bg-jet-black border border-white/10 p-8 rounded-xl w-full max-w-md relative shadow-2xl animate-in zoom-in-95 duration-200">
+            <ServiceStatusModal
+              sale={selectedSale}
+              onClose={() => setIsServiceStatusModalOpen(false)}
+              onUpdate={loadData}
             />
           </div>
         </div>
