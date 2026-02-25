@@ -6,7 +6,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Cell,
 } from "recharts";
 
 interface TopItemsChartProps {
@@ -24,13 +23,16 @@ export const TopItemsChart = ({
   valueKey,
   color,
 }: TopItemsChartProps) => {
-  // Sort and get Top 5 items
   const topData = [...data]
     .sort((a, b) => Number(b[valueKey]) - Number(a[valueKey]))
-    .slice(0, 5);
+    .slice(0, 5)
+    .map((item, index) => ({
+      ...item,
+      fill: color,
+      fillOpacity: 1 - index * 0.15,
+    }));
 
   return (
-    /* Constrain the max width here to avoid excessive stretching */
     <div className="bg-white/[0.03] border border-white/10 p-6 rounded-lg backdrop-blur-sm w-full max-w-[500px] h-[400px] mx-auto xl:mx-0">
       {/* Header section */}
       <div className="mb-6">
@@ -46,7 +48,6 @@ export const TopItemsChart = ({
       <ResponsiveContainer width="100%" height="80%">
         <BarChart
           data={topData}
-          /* Adjust margins to bring bars closer and fit names */
           margin={{ top: 10, right: 10, left: -25, bottom: 20 }}
           barGap={8}
         >
@@ -76,7 +77,6 @@ export const TopItemsChart = ({
             axisLine={false}
           />
 
-          {/* Tooltip in Spanish */}
           <Tooltip
             contentStyle={{
               backgroundColor: "#0f172a",
@@ -89,16 +89,7 @@ export const TopItemsChart = ({
             formatter={(value: any) => [value, "Cantidad"]}
           />
 
-          {/* Bars with controlled size to reduce gaps */}
-          <Bar dataKey={valueKey} radius={[4, 4, 0, 0]} barSize={35}>
-            {topData.map((_, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={color}
-                fillOpacity={1 - index * 0.15}
-              />
-            ))}
-          </Bar>
+          <Bar dataKey={valueKey} radius={[4, 4, 0, 0]} barSize={35} />
         </BarChart>
       </ResponsiveContainer>
     </div>

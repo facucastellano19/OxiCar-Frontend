@@ -6,6 +6,7 @@ import { SyncLoader, Toggle, type ToggleOption } from "../../components";
 import { MainChart } from "./Components/RevenuesChart";
 import { toast } from "sonner";
 import { TopItemsChart } from "./Components/TopItemsChart";
+import { PaymentMethodsChart } from "./Components/PaymentMethodsChart";
 
 type TimeFilter = "weekly" | "monthly" | "yearly";
 
@@ -46,7 +47,7 @@ export const Metrics = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-white text-2xl font-bold tracking-tighter uppercase">
-            Performance <span className="text-icy-blue">Dashboard</span>
+            Dashboard
           </h1>
           <p className="text-pale-slate/40 text-[10px] uppercase tracking-widest mt-1">
             Análisis de ingresos y operaciones
@@ -110,7 +111,11 @@ export const Metrics = () => {
           valueKey="quantity"
           color="#B0D7FF"
         />
+        {/* Payment Methods Chart */}
+        <PaymentMethodsChart data={metrics.paymentMethods} />
       </div>
+
+
     </div>
   );
 };
