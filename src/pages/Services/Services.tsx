@@ -276,7 +276,7 @@ export const Services = () => {
           )}
           isLoading={isLoading && totalItems === 0}
           isEmpty={!isLoading && totalItems === 0}
-          loadingLabel="Sincronizando..."
+          loadingLabel="Cargando servicios..."
           emptyLabel={
             view === "services"
               ? "No se encontraron servicios"

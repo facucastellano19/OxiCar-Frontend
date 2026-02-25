@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
 import { Search, Edit2, Trash2, Plus, RotateCcw, User } from "lucide-react";
 import { employeesService } from "../../services/employees.service";
-import type { Employee, EmployeeForm as EmployeeFormType } from "../../models/employees.model";
+import type {
+  Employee,
+  EmployeeForm as EmployeeFormType,
+} from "../../models/employees.model";
 import { EmployeeForm } from "./Components/EmployeeForm";
 import { toast } from "sonner";
 import { handleBackendError } from "../../utilities";
-import { Button, ConfirmModal, Pagination, Table, Toggle } from "../../components/";
+import {
+  Button,
+  ConfirmModal,
+  Pagination,
+  Table,
+  Toggle,
+} from "../../components/";
 
 export const Employees = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -14,7 +23,9 @@ export const Employees = () => {
   const [showInactive, setShowInactive] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null,
+  );
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState<number | null>(null);
@@ -25,9 +36,14 @@ export const Employees = () => {
   const loadData = async () => {
     try {
       setIsLoading(true);
-      const response = await employeesService.getAll(searchTerm, showInactive ? "inactive" : "active");
-      
-      const employeesData = Array.isArray(response) ? response : (response?.data || []);
+      const response = await employeesService.getAll(
+        searchTerm,
+        showInactive ? "inactive" : "active",
+      );
+
+      const employeesData = Array.isArray(response)
+        ? response
+        : response?.data || [];
       setEmployees(Array.isArray(employeesData) ? employeesData : []);
     } catch (error) {
       toast.error("Error al sincronizar los datos");
@@ -44,7 +60,7 @@ export const Employees = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
-  
+
   const totalItems = employees.length;
 
   const handleEdit = (employee: Employee) => {
@@ -114,7 +130,10 @@ export const Employees = () => {
         <div className="flex justify-end">
           {!showInactive ? (
             <Button
-              onClick={() => { setSelectedEmployee(null); setIsModalOpen(true); }}
+              onClick={() => {
+                setSelectedEmployee(null);
+                setIsModalOpen(true);
+              }}
               className="bg-icy-blue text-jet-black px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-icy-blue/10 animate-in fade-in zoom-in duration-300"
             >
               <Plus size={20} /> Nuevo Empleado
@@ -127,10 +146,12 @@ export const Employees = () => {
 
       <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden shadow-2xl">
         <div className="p-4 border-b border-white/5 bg-white/[0.01] flex flex-col md:flex-row md:items-center justify-end gap-4">
-
           <Toggle
             value={showInactive}
-            onChange={(val) => { setShowInactive(val); setCurrentPage(1); }}
+            onChange={(val) => {
+              setShowInactive(val);
+              setCurrentPage(1);
+            }}
             options={[
               { label: "Activos", value: false },
               { label: "Inactivos", value: true },
@@ -148,25 +169,33 @@ export const Employees = () => {
           ]}
           isLoading={isLoading && totalItems === 0}
           isEmpty={!isLoading && totalItems === 0}
-          loadingLabel="Sincronizando..."
           emptyLabel="No se encontraron empleados"
         >
           {currentData.map((employee) => (
             <tr key={employee.id} className="transition-colors group">
-              <td className="px-6 py-4 font-mono text-xs text-pale-slate text-center opacity-40 italic">#{employee.id}</td>
+              <td className="px-6 py-4 font-mono text-xs text-pale-slate text-center opacity-40 italic">
+                #{employee.id}
+              </td>
               <td className="px-6 py-4 font-medium text-lavender uppercase tracking-tight">
                 <span className="flex items-center gap-2">
                   <User size={14} className="text-icy-blue" />
                   {employee.name}
                 </span>
               </td>
-              <td className="px-6 py-4 text-pale-slate text-sm">{employee.username}</td>
-              <td className="px-6 py-4 text-pale-slate text-sm">{employee.email}</td>
+              <td className="px-6 py-4 text-pale-slate text-sm">
+                {employee.username}
+              </td>
+              <td className="px-6 py-4 text-pale-slate text-sm">
+                {employee.email}
+              </td>
               <td className="px-6 py-4 text-right">
                 <div className="flex justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
                   {showInactive ? (
                     <div className="tooltip-container group/tip">
-                      <Button onClick={() => handleRestore(employee.id)} className="p-2 bg-transparent border-none shadow-none text-icy-blue hover:bg-icy-blue/10">
+                      <Button
+                        onClick={() => handleRestore(employee.id)}
+                        className="p-2 bg-transparent border-none shadow-none text-icy-blue hover:bg-icy-blue/10"
+                      >
                         <RotateCcw size={16} />
                       </Button>
                       <span className="tooltip-text uppercase">Reactivar</span>
@@ -174,16 +203,24 @@ export const Employees = () => {
                   ) : (
                     <>
                       <div className="tooltip-container group/tip">
-                        <Button onClick={() => handleEdit(employee)} className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-icy-blue hover:bg-white/5">
+                        <Button
+                          onClick={() => handleEdit(employee)}
+                          className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-icy-blue hover:bg-white/5"
+                        >
                           <Edit2 size={16} />
                         </Button>
                         <span className="tooltip-text uppercase">Editar</span>
                       </div>
                       <div className="tooltip-container group/tip">
-                        <Button onClick={() => openDeleteConfirm(employee.id)} className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-red-500 hover:bg-red-500/10">
+                        <Button
+                          onClick={() => openDeleteConfirm(employee.id)}
+                          className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-red-500 hover:bg-red-500/10"
+                        >
                           <Trash2 size={16} />
                         </Button>
-                        <span className="tooltip-text uppercase">Desactivar</span>
+                        <span className="tooltip-text uppercase">
+                          Desactivar
+                        </span>
                       </div>
                     </>
                   )}
@@ -212,7 +249,10 @@ export const Employees = () => {
             <EmployeeForm
               initialData={selectedEmployee}
               onSubmit={handleSave}
-              onCancel={() => { setIsModalOpen(false); setSelectedEmployee(null); }}
+              onCancel={() => {
+                setIsModalOpen(false);
+                setSelectedEmployee(null);
+              }}
             />
           </div>
         </div>
@@ -224,7 +264,10 @@ export const Employees = () => {
         message={`Esta acción quitará al empleado del sistema activo.
           \nLo puedes reactivar en cualquier momento.`}
         onConfirm={confirmDelete}
-        onCancel={() => { setIsDeleteModalOpen(false); setEmployeeToDelete(null); }}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setEmployeeToDelete(null);
+        }}
       />
     </div>
   );

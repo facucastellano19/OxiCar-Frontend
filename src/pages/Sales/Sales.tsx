@@ -337,6 +337,7 @@ export const Sales = () => {
           }
           isLoading={isLoading}
           isEmpty={!isLoading && currentData.length === 0}
+          loadingLabel="Cargando ventas..."
         >
           {currentData.map((sale: Sale) => (
             <tr
