@@ -55,6 +55,12 @@ export const Sidebar = () => {
       icon: <History size={18} />,
       roles: [1],
     },
+    {
+      path: PrivateRoutes.METRICS,
+      label: "Metricas",
+      icon: <History size={18} />,
+      roles: [1],
+    },
   ];
 
   const handleLogout = () => {

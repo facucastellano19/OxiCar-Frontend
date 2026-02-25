@@ -2,10 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { PrivateRoutes, PublicRoutes } from "../models"
 import { AuthGuard } from "../guards/auth.guards"
 import { MainLayout } from "../components/"
-import {Services, Home, Login, Clients} from "../pages/"
-import { Products } from "../pages/Products/Products"
-import { Employees } from "../pages/Employees/Employees"
-import { Sales } from "../pages/Sales/Sales"
+import {Services, Home, Login, Clients, Products, Employees, Sales, Metrics} from "../pages/"
 
 
 export const AppRouter = () => {
@@ -22,6 +19,7 @@ export const AppRouter = () => {
       <Route path={PrivateRoutes.PRODUCTS} element={<Products />} />  
       <Route path={PrivateRoutes.EMPLOYEES} element={<Employees />} />   
       <Route path={PrivateRoutes.SALES} element={<Sales />} />    
+      <Route path={PrivateRoutes.METRICS} element={<Metrics />} />
       
     </Route>
   </Route>
