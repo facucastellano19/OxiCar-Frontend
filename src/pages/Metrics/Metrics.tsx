@@ -48,22 +48,30 @@ export const Metrics = () => {
 
   return (
     <div className="p-6 space-y-8 animate-fade-in max-w-[1600px] mx-auto">
-      {/* 1. HEADER SECTON */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-white text-2xl font-black tracking-tighter uppercase italic">
-            METRICAS
-          </h1>
-          <p className="text-pale-slate/40 text-[10px] uppercase tracking-[0.3em] mt-1 font-bold">
+      {/* 1. HEADER SECTION */}
+      <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+        <div className="flex flex-col">
+          {/* Contenedor para alinear título con el toggle */}
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold text-lavender tracking-tight uppercase italic font-black leading-none">
+              Métricas
+            </h1>
+            <div className="h-1 w-12 bg-icy-blue mt-2"></div>
+          </div>
+
+          <p className="text-pale-slate/40 text-[10px] uppercase tracking-[0.3em] mt-4 font-bold">
             Análisis de ingresos y operaciones
           </p>
         </div>
 
-        <Toggle
-          options={filterOptions}
-          value={filter}
-          onChange={(val) => setFilter(val)}
-        />
+        <div className="md:self-start pt-1">
+          {/* El pt-1 es para compensar visualmente la altura del texto del H1 */}
+          <Toggle
+            options={filterOptions}
+            value={filter}
+            onChange={(val) => setFilter(val)}
+          />
+        </div>
       </div>
 
       {/* 2. KPI CARDS - Flash Info */}
