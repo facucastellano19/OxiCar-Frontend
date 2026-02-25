@@ -47,9 +47,6 @@ export const TopClientsTable = ({ clients }: TopClientsTableProps) => {
                 <span className="text-white font-bold text-xs uppercase tracking-widest">
                   {item.client}
                 </span>
-                <span className="text-[8px] text-pale-slate/30 uppercase font-medium">
-                  Cliente Premium
-                </span>
               </div>
             </td>
 

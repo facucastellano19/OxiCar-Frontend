@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { metricsService } from "../../services/metrics.service";
 import { type DashboardMetricsResponse } from "../../models";
-import { KPICard } from "./Components/KPICard";
 import { SyncLoader, Toggle, type ToggleOption } from "../../components";
-import { MainChart } from "./Components/RevenuesChart";
 import { toast } from "sonner";
-import { TopItemsChart } from "./Components/TopItemsChart";
-import { PaymentMethodsChart } from "./Components/PaymentMethodsChart";
-import { TopClientsTable } from "./Components/TopClientsTable";
+
+import {
+  KPICard,
+  MainChart,
+  TopItemsChart,
+  PaymentMethodsChart,
+  TopClientsTable,
+} from "./Components";
 
 type TimeFilter = "weekly" | "monthly" | "yearly";
 

@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   History,
   LogOut,
+  ChartColumnBig,
 } from "lucide-react";
 import { PrivateRoutes, PublicRoutes } from "../../../models";
 import { useUserStore } from "../../../store";
@@ -58,7 +59,7 @@ export const Sidebar = () => {
     {
       path: PrivateRoutes.METRICS,
       label: "Metricas",
-      icon: <History size={18} />,
+      icon: <ChartColumnBig size={18} />,
       roles: [1],
     },
   ];
