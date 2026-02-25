@@ -7,6 +7,7 @@ import { MainChart } from "./Components/RevenuesChart";
 import { toast } from "sonner";
 import { TopItemsChart } from "./Components/TopItemsChart";
 import { PaymentMethodsChart } from "./Components/PaymentMethodsChart";
+import { TopClientsTable } from "./Components/TopClientsTable";
 
 type TimeFilter = "weekly" | "monthly" | "yearly";
 
@@ -33,6 +34,7 @@ export const Metrics = () => {
     };
     fetchMetrics();
   }, [filter]);
+
   if (!metrics) {
     return (
       <div className="p-6">
@@ -42,14 +44,14 @@ export const Metrics = () => {
   }
 
   return (
-    <div className="p-6 space-y-8 animate-fade-in">
-      {/* Header and Toggle */}
+    <div className="p-6 space-y-8 animate-fade-in max-w-[1600px] mx-auto">
+      {/* 1. HEADER SECTON */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-white text-2xl font-bold tracking-tighter uppercase">
-            Dashboard
+          <h1 className="text-white text-2xl font-black tracking-tighter uppercase italic">
+            METRICAS
           </h1>
-          <p className="text-pale-slate/40 text-[10px] uppercase tracking-widest mt-1">
+          <p className="text-pale-slate/40 text-[10px] uppercase tracking-[0.3em] mt-1 font-bold">
             Análisis de ingresos y operaciones
           </p>
         </div>
@@ -61,7 +63,7 @@ export const Metrics = () => {
         />
       </div>
 
-      {/* KPI Cards Grid */}
+      {/* 2. KPI CARDS - Flash Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
           title="Ingresos por servicios"
@@ -89,13 +91,13 @@ export const Metrics = () => {
         />
       </div>
 
-      {/* Main Performance Chart */}
-      <div className="w-full">
+      {/* 3. REVENUES CHART */}
+      <div className="w-full bg-white/[0.02] p-1 rounded-xl border border-white/5">
         <MainChart data={metrics.breakdown} />
       </div>
 
-      {/* Rankings Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      {/* 4. MID SECTION RANKING PRODUCTS, SERVICES AND PAYMENTMETHODS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
         <TopItemsChart
           title="Productos"
           data={metrics.top.products}
@@ -111,11 +113,14 @@ export const Metrics = () => {
           valueKey="quantity"
           color="#B0D7FF"
         />
-        {/* Payment Methods Chart */}
+
         <PaymentMethodsChart data={metrics.paymentMethods} />
       </div>
 
-
+      {/* 5. CLIENTS RANKING */}
+      <div className="w-full pt-2">
+        <TopClientsTable clients={metrics.top.clients} />
+      </div>
     </div>
   );
 };
