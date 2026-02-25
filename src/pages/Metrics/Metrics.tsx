@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { metricsService } from "../../services/metrics.service";
 import { type DashboardMetricsResponse } from "../../models";
 import { KPICard } from "./Components/KPICard";
-import { Toggle, type ToggleOption } from "../../components";
+import { SyncLoader, Toggle, type ToggleOption } from "../../components";
 import { MainChart } from "./Components/RevenuesChart";
 import { toast } from "sonner";
+import { TopItemsChart } from "./Components/TopItemsChart";
 
 type TimeFilter = "weekly" | "monthly" | "yearly";
 
@@ -25,15 +26,19 @@ export const Metrics = () => {
         setMetrics(data);
       } catch (error) {
         setMetrics(null);
-
         toast.error("No se pudieron cargar las métricas");
-
         console.error("Metrics synchronization failed:", error);
       }
     };
     fetchMetrics();
   }, [filter]);
-  if (!metrics) return null;
+  if (!metrics) {
+    return (
+      <div className="p-6">
+        <SyncLoader label="Cargando métricas del sistema..." />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-8 animate-fade-in">
@@ -59,19 +64,19 @@ export const Metrics = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
           title="Ingresos por servicios"
-          value={`$${metrics.general.totalServiceRevenue}`}
+          value={`$${Number(metrics.general.totalServiceRevenue).toLocaleString()}`}
           data={metrics.breakdown}
           dataKey="service_revenue"
         />
         <KPICard
           title="Ingresos por productos"
-          value={`$${metrics.general.totalProductRevenue}`}
+          value={`$${Number(metrics.general.totalProductRevenue).toLocaleString()}`}
           data={metrics.breakdown}
           dataKey="product_revenue"
         />
         <KPICard
           title="Ingresos TOTALES"
-          value={`$${metrics.general.totalRevenue}`}
+          value={`$${Number(metrics.general.totalRevenue).toLocaleString()}`}
           data={metrics.breakdown}
           dataKey="service_revenue"
         />
@@ -86,6 +91,25 @@ export const Metrics = () => {
       {/* Main Performance Chart */}
       <div className="w-full">
         <MainChart data={metrics.breakdown} />
+      </div>
+
+      {/* Rankings Section */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <TopItemsChart
+          title="Productos"
+          data={metrics.top.products}
+          dataKey="product"
+          valueKey="quantity"
+          color="#f59e0b"
+        />
+
+        <TopItemsChart
+          title="Servicios"
+          data={metrics.top.services}
+          dataKey="service"
+          valueKey="quantity"
+          color="#B0D7FF"
+        />
       </div>
     </div>
   );
