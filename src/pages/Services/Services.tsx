@@ -184,7 +184,6 @@ export const Services = () => {
 
         <div className="flex justify-end">
           {!showInactive ? (
-            
             <PermissionGate allowedRoles={[1]}>
               <Button
                 onClick={() => {

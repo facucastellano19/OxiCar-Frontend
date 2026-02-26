@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { metricsService } from "../../services/metrics.service";
+import { metricsService } from "../../services/";
 import { type DashboardMetricsResponse } from "../../models";
 import {
   SyncLoader,
@@ -85,76 +85,77 @@ export const Metrics = () => {
   return (
     <div className="p-6 space-y-8 animate-fade-in max-w-[1600px] mx-auto">
       {/* 1. HEADER SECTION */}
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+        <div className="flex flex-col">
           <div className="flex flex-col">
-            <div className="flex flex-col">
-              <h1 className="text-2xl font-bold text-lavender tracking-tight uppercase italic font-black leading-none">
-                Métricas
-              </h1>
-              <div className="h-1 w-12 bg-icy-blue mt-2"></div>
-            </div>
-            <p className="text-pale-slate/40 text-[10px] uppercase tracking-[0.3em] mt-4 font-bold">
-              Análisis de ingresos y operaciones
-            </p>
-          </div>
-
-          <div className="md:self-start pt-1">
-            <Toggle
-              options={filterOptions}
-              value={filter === "custom" ? null : (filter as any)}
-              onChange={handleFilterChange} // Updated to clean dates
-            />
-          </div>
-        </div>
-
-        {/* DATE FILTERS SECTION */}
-        <div className="flex flex-wrap items-end gap-4 bg-white/[0.02] p-4 rounded-xl border border-white/5 w-fit">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-black text-lavender/40 uppercase tracking-widest ml-1">
-              Desde
-            </label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="bg-jet-black/50 border border-white/10 rounded-lg py-2 px-3 text-[11px] text-lavender outline-none focus:border-icy-blue/30 transition-all w-40"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-black text-lavender/40 uppercase tracking-widest ml-1">
-              Hasta
-            </label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="bg-jet-black/50 border border-white/10 rounded-lg py-2 px-3 text-[11px] text-lavender outline-none focus:border-icy-blue/30 transition-all w-40"
-            />
-          </div>
-
-          <div className="flex gap-2">
-            <Button
-              onClick={() => fetchMetrics(true)}
-              className="p-2.5 bg-icy-blue/10 border border-icy-blue/20 text-icy-blue hover:bg-icy-blue/20 shadow-none"
-            >
-              <Search size={16} />
-            </Button>
-
-            {(startDate || endDate || filter === "custom") && (
-              <Button
-                onClick={handleReset}
-                className="p-2.5 bg-white/5 border border-white/5 text-red-400 hover:bg-red-500/10 shadow-none"
-              >
-                <RotateCcw size={16} />
-              </Button>
-            )}
+            <h1 className="text-2xl font-bold text-lavender tracking-tight uppercase italic font-black leading-none">
+              Métricas
+            </h1>
+            <div className="h-1 w-12 bg-icy-blue mt-2"></div>
           </div>
         </div>
       </div>
 
-      {/* 2. KPI CARDS */}
+      {/* 2. FILTER TOOLBAR  */}
+      <div className="flex flex-wrap items-center gap-6 pb-2 border-b border-white/5">
+        {/* FAST FILTERS (LEFT) */}
+        <div className="flex flex-col gap-2">
+          <label className="text-[9px] font-black text-lavender/30 uppercase tracking-[0.2em] ml-1">
+            Filtros Rápidos
+          </label>
+          <Toggle
+            options={filterOptions}
+            value={filter === "custom" ? null : (filter as any)}
+            onChange={handleFilterChange}
+          />
+        </div>
+
+        {/* CUSTOM DATE RANGE (RIGHT) */}
+        <div className="flex flex-col gap-2">
+          <label className="text-[9px] font-black text-lavender/30 uppercase tracking-[0.2em] ml-1">
+            Rango Personalizado
+          </label>
+          <div className="flex items-center gap-3 bg-white/[0.02] border border-white/10 rounded-xl px-4 h-[42px]">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="bg-transparent text-[11px] font-bold text-lavender uppercase outline-none focus:text-icy-blue transition-all w-32"
+            />
+            <span className="text-white/10 font-black text-xs">/</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="bg-transparent text-[11px] font-bold text-lavender uppercase outline-none focus:text-icy-blue transition-all w-32"
+            />
+            <button
+              onClick={() => fetchMetrics(true)}
+              className={`ml-2 p-1.5 rounded-lg transition-all ${
+                startDate && endDate
+                  ? "text-icy-blue hover:bg-icy-blue/10"
+                  : "text-white/10 cursor-not-allowed"
+              }`}
+            >
+              <Search size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* RESET BUTTON */}
+        {(startDate || endDate || filter === "custom") && (
+          <div className="flex flex-col gap-2 self-end">
+            <Button
+              onClick={handleReset}
+              className="h-[42px] px-4 bg-red-500/5 border border-red-500/10 text-red-400 hover:bg-red-500/10 shadow-none rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
+            >
+              <RotateCcw size={14} />
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* 3. KPI CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
           title="Ingresos por servicios"
@@ -182,12 +183,12 @@ export const Metrics = () => {
         />
       </div>
 
-      {/* 3. REVENUES CHART */}
+      {/* 4. REVENUES CHART */}
       <div className="w-full bg-white/[0.02] p-1 rounded-xl border border-white/5">
         <MainChart data={metrics.breakdown} />
       </div>
 
-      {/* 4. MID SECTION */}
+      {/* 5. MID SECTION */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
         <TopItemsChart
           title="Productos"
@@ -206,7 +207,7 @@ export const Metrics = () => {
         <PaymentMethodsChart data={metrics.paymentMethods} />
       </div>
 
-      {/* 5. CLIENTS RANKING */}
+      {/* 6. CLIENTS RANKING */}
       <div className="w-full pt-2">
         <TopClientsTable clients={metrics.top.clients} />
       </div>

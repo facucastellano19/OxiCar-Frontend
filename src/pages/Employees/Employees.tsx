@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, Edit2, Trash2, Plus, RotateCcw, User } from "lucide-react";
+import { Edit2, Trash2, Plus, RotateCcw, User } from "lucide-react";
 import { employeesService } from "../../services/employees.service";
 import type {
   Employee,
