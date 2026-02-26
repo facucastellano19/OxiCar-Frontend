@@ -3,11 +3,9 @@ import {
   Plus,
   Search,
   Wrench,
-  Calendar,
   Eye,
   RotateCcw,
   DollarSign,
-  Activity,
 } from "lucide-react";
 import { Button, Table, Toggle, Pagination } from "../../components/";
 import { useApi } from "../../hooks";
@@ -337,6 +335,7 @@ export const Sales = () => {
           }
           isLoading={isLoading}
           isEmpty={!isLoading && currentData.length === 0}
+          loadingLabel="Cargando ventas..."
         >
           {currentData.map((sale: Sale) => (
             <tr

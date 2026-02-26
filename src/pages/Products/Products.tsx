@@ -315,7 +315,7 @@ export const Products = () => {
           }
           isLoading={isLoading && totalItems === 0}
           isEmpty={!isLoading && totalItems === 0}
-          loadingLabel="Sincronizando..."
+          loadingLabel="Cargando productos..."
           emptyLabel={
             view === "products"
               ? "No se encontraron productos"

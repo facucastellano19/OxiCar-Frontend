@@ -2,7 +2,6 @@ import { useState, Fragment, useEffect } from "react";
 import {
   Search,
   Edit2,
-  Trash2,
   UserPlus,
   History,
   Car,

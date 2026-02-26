@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SyncLoader } from "./SyncLoader";
 
 export interface TableColumn {
   label: string;
@@ -46,14 +47,14 @@ export const Table = ({
           </thead>
           <tbody className="divide-y divide-white/[0.02] [&>tr:nth-child(even)]:bg-white/[0.01] [&>tr:hover]:bg-white/[0.04] transition-colors">
             {isLoading ? (
-              <tr>
-                <td colSpan={finalColSpan} className="py-20 text-center text-icy-blue animate-pulse font-bold text-xs uppercase">
-                  {loadingLabel}
-                </td>
-              </tr>
+              /* Using the common SyncLoader here */
+              <SyncLoader isTable colSpan={finalColSpan} label={loadingLabel} />
             ) : isEmpty ? (
               <tr>
-                <td colSpan={finalColSpan} className="py-20 text-center text-pale-slate/30 italic text-xs uppercase tracking-[0.2em]">
+                <td
+                  colSpan={finalColSpan}
+                  className="py-20 text-center text-pale-slate/30 italic text-xs uppercase tracking-[0.2em]"
+                >
                   {emptyLabel}
                 </td>
               </tr>
