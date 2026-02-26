@@ -21,7 +21,7 @@ export const Sidebar = () => {
   const menuItems = [
     {
       path: PrivateRoutes.HOME,
-      label: "Dashboard",
+      label: "Home",
       icon: <LayoutDashboard size={18} />,
     },
     {
