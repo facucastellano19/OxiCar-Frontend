@@ -13,6 +13,14 @@ const ERROR_DICTIONARY: Record<string, string> = {
   "cannot delete category because it is being used by one or more services":
     "No se puede eliminar la categoría porque tiene servicios asociados.",
 
+  // --- EMPLOYEES AND USERS MODULE ---
+  "password must be at least 8 characters long":
+    "La contraseña debe tener al menos 8 caracteres.",
+  "username must be alphanumeric":
+    "El usuario solo puede contener letras y números.",
+  "username already exists": "El nombre de usuario ya está en uso.",
+  "role id is required": "El rol de usuario es obligatorio.",
+
   // --- PRODUCTS MODULE (Stock & Validations) ---
   "stock must be a number": "El stock debe ser un número.",
   "stock must be an integer": "El stock debe ser un número entero.",
@@ -34,12 +42,14 @@ const ERROR_DICTIONARY: Record<string, string> = {
   "price must be a positive number": "El precio debe ser mayor a 0.",
 
   "description must be text": "La descripción debe ser texto.",
-  "description cannot exceed 500 characters": "La descripción es demasiado larga.",
+  "description cannot exceed 500 characters":
+    "La descripción es demasiado larga.",
 
   // --- COMMON / GENERAL VALIDATIONS ---
   "name is required": "El nombre es obligatorio.",
   "name must be text": "El nombre debe ser texto.",
-  "name cannot exceed 100 characters": "El nombre es demasiado largo (máx 100).",
+  "name cannot exceed 100 characters":
+    "El nombre es demasiado largo (máx 100).",
   "name cannot exceed 50 characters": "El nombre es demasiado largo (máx 50).",
 
   "id is required": "Identificador obligatorio.",
