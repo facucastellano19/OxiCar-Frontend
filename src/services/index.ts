@@ -6,3 +6,5 @@ export * from "./products.service";
 export * from "./services.service";
 export * from "./sales.services";
 export * from "./metrics.service";
+export * from "./home.service";
+export * from "./auditory.service";

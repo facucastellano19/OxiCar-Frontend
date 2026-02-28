@@ -7,3 +7,6 @@ export * from "./products.model";
 export * from "./employees.model";
 export * from "./sales.model";
 export * from "./metrics.model";
+export * from "./home.model";
+export * from "./auditory.model";
+
