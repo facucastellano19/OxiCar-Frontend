@@ -6,3 +6,6 @@ export * from "./Employees/Employees.tsx";
 export * from "./Products/Products.tsx";
 export * from "./Sales/Sales.tsx";
 export * from "./Metrics/Metrics.tsx";
+export * from "./Auditory/Auditory.tsx";
+
+
