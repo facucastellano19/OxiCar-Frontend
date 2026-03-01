@@ -108,7 +108,7 @@ export const Auditory = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 animate-fade-in max-w-[1600px] mx-auto">
+    <div className="space-y-6 animate-fade-in max-w-[1600px] mx-auto">
       <div className="flex flex-col">
         <h1 className="text-2xl font-bold text-lavender uppercase italic font-black">
           Auditoría

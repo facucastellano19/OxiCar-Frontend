@@ -83,7 +83,7 @@ export const Metrics = () => {
   }
 
   return (
-    <div className="p-6 space-y-8 animate-fade-in max-w-[1600px] mx-auto">
+    <div className="space-y-6 animate-fade-in max-w-[1600px] mx-auto">
       {/* 1. HEADER SECTION */}
       <div className="flex flex-col md:flex-row justify-between items-start gap-4">
         <div className="flex flex-col">
