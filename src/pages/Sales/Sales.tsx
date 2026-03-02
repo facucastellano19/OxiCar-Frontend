@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Plus, Search, Wrench, Eye, RotateCcw, DollarSign } from "lucide-react";
-import { Button, Table, Toggle, Pagination } from "../../components/";
+import {
+  Button,
+  Table,
+  Toggle,
+  Pagination,
+  ActionButton,
+} from "../../components/";
 import { useApi } from "../../hooks";
 import { salesService } from "../../services/";
 import { type Sale } from "../../models/sales.model";
@@ -130,10 +136,8 @@ export const Sales = () => {
     return rawData.slice(start, start + itemsPerPage);
   }, [rawData, currentPage, itemsPerPage]);
 
-  // Helpers para deshabilitar botones
   const isPaymentModifiable = (status: string) => {
     const s = status?.toLowerCase() || "";
-    // Si está pagado o cancelado, no se puede modificar
     return !(
       s.includes("pagado") ||
       s.includes("completado") ||
@@ -396,29 +400,29 @@ export const Sales = () => {
               </td>
               <td className="px-6 py-4 text-right pr-6">
                 <div className="flex justify-end gap-1">
-                  <Button
+                  <ActionButton
+                    icon={Eye}
+                    label="Ver Detalles"
                     onClick={() => handleViewDetails(sale)}
-                    className="p-2 bg-transparent border-none text-pale-slate hover:text-white hover:bg-white/5 shadow-none transition-all"
-                  >
-                    <Eye size={16} />
-                  </Button>
+                    hoverColor="hover:text-white hover:bg-white/5"
+                  />
 
-                  <Button
+                  <ActionButton
+                    icon={DollarSign}
+                    label="Gestionar Pago"
                     onClick={() => handlePaymentClick(sale)}
                     disabled={!isPaymentModifiable(sale.payment_status)}
-                    className="p-2 bg-transparent border-none text-pale-slate hover:text-green-400 hover:bg-green-500/10 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-pale-slate shadow-none transition-all"
-                  >
-                    <DollarSign size={16} />
-                  </Button>
+                    hoverColor="hover:text-green-400 hover:bg-green-500/10"
+                  />
 
                   {view === "services" && (
-                    <Button
+                    <ActionButton
+                      icon={Wrench}
+                      label="Gestionar servicio"
                       onClick={() => handleServiceStatusClick(sale)}
                       disabled={!isServiceModifiable(sale.service_status || "")}
-                      className="p-2 bg-transparent border-none text-pale-slate hover:text-icy-blue hover:bg-icy-blue/10 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-pale-slate shadow-none transition-all"
-                    >
-                      <Wrench size={16} />
-                    </Button>
+                      hoverColor="hover:text-icy-blue hover:bg-icy-blue/10"
+                    />
                   )}
                 </div>
               </td>
