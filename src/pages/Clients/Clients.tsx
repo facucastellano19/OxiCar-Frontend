@@ -16,7 +16,7 @@ import { clientsService } from "../../services/clients.service";
 import { handleBackendError } from "../../utilities";
 import { toast } from "sonner";
 import { ClientForm, PurchaseHistoryModal } from "./Components";
-import { Button, Table, Pagination } from "../../components";
+import { Button, Table, Pagination, ActionButton } from "../../components";
 
 export const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -102,12 +102,11 @@ export const Clients = () => {
   const indexOfFirstClient = indexOfLastClient - clientsPerPage;
   const currentClients = clients.slice(indexOfFirstClient, indexOfLastClient);
 
-
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
 
-return (
+  return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* HEADER */}
       <div className="flex justify-between items-end">
@@ -134,7 +133,10 @@ return (
         {/* SEARCH BAR */}
         <div className="p-4 border-b border-white/5 bg-white/[0.01]">
           <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-pale-slate" size={16} />
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-pale-slate"
+              size={16}
+            />
             <input
               type="text"
               placeholder="Buscar por nombre, patente o teléfono..."
@@ -159,68 +161,103 @@ return (
           emptyLabel="No se encontraron clientes"
         >
           {currentClients.map((client) => (
-                  <Fragment key={client.id}>
-                    <tr className="transition-colors group">
-                      <td className="px-6 py-4 font-mono text-xs text-pale-slate text-center italic">#{client.id}</td>
-                      <td className="px-6 py-4 font-medium text-lavender uppercase tracking-tight">{client.first_name} {client.last_name}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                          <span className="text-lavender/60 text-xs">{client.email || "Sin email"}</span>
-                          <span className="text-pale-slate text-[11px] font-mono">{client.phone}</span>
+            <Fragment key={client.id}>
+              <tr className="transition-colors group">
+                <td className="px-6 py-4 font-mono text-xs text-pale-slate text-center italic">
+                  #{client.id}
+                </td>
+                <td className="px-6 py-4 font-medium text-lavender uppercase tracking-tight">
+                  {client.first_name} {client.last_name}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex flex-col">
+                    <span className="text-lavender/60 text-xs">
+                      {client.email || "Sin email"}
+                    </span>
+                    <span className="text-pale-slate text-[11px] font-mono">
+                      {client.phone}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  {client.vehicles && client.vehicles.length > 0 ? (
+                    <button
+                      onClick={() => toggleExpand(client.id)}
+                      className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1 rounded-md text-[10px] font-bold text-pale-slate hover:border-icy-blue/30 hover:text-icy-blue transition-all"
+                    >
+                      <Car size={12} />
+                      {client.vehicles.length}{" "}
+                      {client.vehicles.length === 1 ? "VEHÍCULO" : "VEHÍCULOS"}
+                      {expandedClientId === client.id ? (
+                        <ChevronUp size={12} />
+                      ) : (
+                        <ChevronDown size={12} />
+                      )}
+                    </button>
+                  ) : (
+                    <span className="text-pale-slate/30 text-[10px] italic uppercase">
+                      Sin vehículos
+                    </span>
+                  )}
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <div className="flex justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
+                    <div className="tooltip-container group/tip">
+                      <ActionButton
+                        icon={History}
+                        label="Ver Historial"
+                        onClick={() => handleViewHistory(client)}
+                      />
+
+                      <span className="tooltip-text uppercase">
+                        Ver Historial
+                      </span>
+                    </div>
+                    <div className="tooltip-container group/tip">
+                      <ActionButton
+                        icon={Edit2}
+                        label="Editar Cliente"
+                        onClick={() => handleEditClick(client)}
+                      />
+                      <span className="tooltip-text uppercase">
+                        Editar Cliente
+                      </span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {expandedClientId === client.id && (
+                <tr className="bg-icy-blue/[0.02] hover:bg-icy-blue/[0.02] animate-in slide-in-from-top-1 duration-200">
+                  <td
+                    colSpan={5}
+                    className="px-16 py-4 border-l-2 border-icy-blue/30"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {client.vehicles.map((v, i) => (
+                        <div
+                          key={i}
+                          className="bg-jet-black/50 border border-white/10 p-3 rounded-lg flex justify-between items-center shadow-inner"
+                        >
+                          <div>
+                            <p className="text-[10px] font-bold text-icy-blue uppercase">
+                              {v.brand} {v.model}
+                            </p>
+                            <p className="text-lavender font-mono text-sm tracking-wider">
+                              {v.license_plate}
+                            </p>
+                            <p className="text-pale-slate text-[10px] uppercase mt-1 opacity-50">
+                              {v.color} • {v.year}
+                            </p>
+                          </div>
+                          <Car size={24} className="text-white/5" />
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        {client.vehicles && client.vehicles.length > 0 ? (
-                          <button
-                            onClick={() => toggleExpand(client.id)}
-                            className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1 rounded-md text-[10px] font-bold text-pale-slate hover:border-icy-blue/30 hover:text-icy-blue transition-all"
-                          >
-                            <Car size={12} />
-                            {client.vehicles.length} {client.vehicles.length === 1 ? "VEHÍCULO" : "VEHÍCULOS"}
-                            {expandedClientId === client.id ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                          </button>
-                        ) : (
-                          <span className="text-pale-slate/30 text-[10px] italic uppercase">Sin vehículos</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
-                          <div className="tooltip-container group/tip">
-                            <Button onClick={() => handleViewHistory(client)} className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-lavender hover:bg-white/5">
-                              <History size={16} />
-                            </Button>
-                            <span className="tooltip-text uppercase">Ver Historial</span>
-                          </div>
-                          <div className="tooltip-container group/tip">
-                            <Button onClick={() => handleEditClick(client)} className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-icy-blue hover:bg-white/5">
-                              <Edit2 size={16} />
-                            </Button>
-                            <span className="tooltip-text uppercase">Editar Cliente</span>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    {expandedClientId === client.id && (
-                      <tr className="bg-icy-blue/[0.02] hover:bg-icy-blue/[0.02] animate-in slide-in-from-top-1 duration-200">
-                        <td colSpan={5} className="px-16 py-4 border-l-2 border-icy-blue/30">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {client.vehicles.map((v, i) => (
-                              <div key={i} className="bg-jet-black/50 border border-white/10 p-3 rounded-lg flex justify-between items-center shadow-inner">
-                                <div>
-                                  <p className="text-[10px] font-bold text-icy-blue uppercase">{v.brand} {v.model}</p>
-                                  <p className="text-lavender font-mono text-sm tracking-wider">{v.license_plate}</p>
-                                  <p className="text-pale-slate text-[10px] uppercase mt-1 opacity-50">{v.color} • {v.year}</p>
-                                </div>
-                                <Car size={24} className="text-white/5" />
-                              </div>
-                            ))}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                ))
-          }
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          ))}
         </Table>
 
         <Pagination
