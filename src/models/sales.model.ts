@@ -24,6 +24,8 @@ export interface Sale {
   completed_at: string;
   cancelled_at: string;
   started_at: string;
+  payment_cancelled_at: string;
+  paid_at: string;
   products?: SaleProduct[];
   services?: SaleServiceItem[];
   vehicle?: {

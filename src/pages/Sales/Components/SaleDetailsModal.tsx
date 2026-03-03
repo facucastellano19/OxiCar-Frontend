@@ -1,5 +1,5 @@
 import { Button, Table } from "../../../components";
-import { Clock } from "lucide-react";
+import { Clock, DollarSign } from "lucide-react";
 
 interface Props {
   sale: any;
@@ -136,6 +136,62 @@ export const SaleDetailsModal = ({ sale, onClose }: Props) => {
           </div>
         </div>
       )}
+
+      <div className="bg-white/[0.01] border border-white/5 rounded-xl p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <DollarSign size={12} className="text-green-500/40" />
+          <h4 className="text-[9px] font-black text-green-500/40 uppercase tracking-[0.2em]">
+            Trazabilidad de Pago
+          </h4>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6">
+          {sale.payment_cancelled_at ? (
+            /* CASO 1: CANCELADO O DEVUELTO */
+            <div className="flex flex-col gap-1 border-l-2 border-red-500 pl-4 py-2 bg-red-500/5 rounded-r">
+              <span className="text-[9px] font-black text-red-500 uppercase italic tracking-wider">
+                Pago Anulado / Devuelto
+              </span>
+              <span className="text-xs text-red-400/90 font-mono font-bold">
+                {formatTraceDate(sale.payment_cancelled_at)}
+              </span>
+              <span className="text-[10px] text-red-400/40 italic">
+                La transacción ha sido invalidada en el sistema.
+              </span>
+            </div>
+          ) : (
+            /* CASO 2: FLUJO NORMAL (Pendiente o Pagado) */
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div
+                className={`flex flex-col gap-1 border-l pl-4 py-1 transition-all ${
+                  sale.paid_at
+                    ? "border-green-500/60"
+                    : "border-white/5 opacity-20"
+                }`}
+              >
+                <span
+                  className={`text-[9px] font-black uppercase italic ${
+                    sale.paid_at ? "text-green-400" : "text-pale-slate"
+                  }`}
+                >
+                  Cobro Confirmado
+                </span>
+                <span className="text-[11px] text-lavender/70 font-mono">
+                  {formatTraceDate(sale.paid_at) || "Pendiente de cobro"}
+                </span>
+              </div>
+
+              {!sale.paid_at && (
+                <div className="flex items-center pl-4 py-1 border-l border-white/5">
+                  <span className="text-[10px] text-pale-slate/40 italic">
+                    Esperando confirmación vía {sale.payment_method}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
 
       <div className="border border-white/5 rounded-xl bg-jet-black/20 overflow-hidden">
         <Table
