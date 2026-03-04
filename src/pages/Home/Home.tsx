@@ -18,7 +18,6 @@ export const Home = () => {
         setData(response);
       } catch (error) {
         toast.error("Error al sincronizar el dashboard");
-        console.error(error);
       }
     };
     fetchHomeData();

@@ -52,10 +52,7 @@ export const ServiceForm = ({
 
   return (
     <form
-      onSubmit={handleSubmit(
-        (data) => onSubmit(data),
-        (err) => console.log("Zod validation errors:", err),
-      )}
+      onSubmit={handleSubmit((data) => onSubmit(data))}
       className="space-y-6"
     >
       {/* SERVICE INFORMATION SECTION */}
@@ -85,7 +82,6 @@ export const ServiceForm = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          
           {/* CATEGORY SELECT FIELD */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[10px] font-bold text-pale-slate uppercase tracking-widest ml-1">

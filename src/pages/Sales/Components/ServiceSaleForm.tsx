@@ -93,7 +93,6 @@ export const ServiceSaleForm = ({ onCancel, onSubmit }: Props) => {
     setSelectedVehicleId("");
     setClientVehicles([]);
     try {
-      // Llama a clientsRouter.get('/:id/vehicles')
       const resVehicles = await clientsService.getVehicles(client.id);
       setClientVehicles(
         Array.isArray(resVehicles)
@@ -129,7 +128,6 @@ export const ServiceSaleForm = ({ onCancel, onSubmit }: Props) => {
   };
 
   const handleSubmit = () => {
-    // MAPEAMOS EXACTAMENTE COMO PIDE Joi postSaleServicesSchema
     const payload = {
       client_id: selectedClientId ?? NaN,
       vehicle_id: Number(selectedVehicleId) || NaN,

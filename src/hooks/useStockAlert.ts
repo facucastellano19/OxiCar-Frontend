@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { productsService } from "../services/products.service";
 import { type Product } from "../models/";
+import { toast } from "sonner";
 
 export const useStockAlert = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,7 +18,7 @@ export const useStockAlert = () => {
         setProducts([...response.data]);
       }
     } catch (error) {
-      console.error("Sync Error:", error);
+      toast.error("No se pudieron cargar los productos");
     } finally {
       setLoading(false);
     }

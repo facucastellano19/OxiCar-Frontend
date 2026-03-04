@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "sonner";
 
 export const useLogin = () => {
   const isLogged = useUserStore((state) => state.isLogged);
@@ -35,10 +36,8 @@ export const useLogin = () => {
   useEffect(() => {
     if (data?.token) {
       try {
-        // Decodificamos el token para obtener role_id, username, etc.
         const decoded: any = jwtDecode(data.token);
 
-        // Guardamos en el store combinando la data original + lo decodificado
         setUserInfo({
           ...data,
           role_id: decoded.role_id,
@@ -48,7 +47,7 @@ export const useLogin = () => {
 
         navigate(`/${PrivateRoutes.HOME}`, { replace: true });
       } catch (err) {
-        console.error("Error decodificando el token:", err);
+        toast.error("Error al procesar la información del usuario");
       }
     }
   }, [data, setUserInfo, navigate]);

@@ -9,10 +9,8 @@ export const SyncLoader = ({
   isTable = false,
   colSpan = 1,
 }: SyncLoaderProps) => {
-  // Content with your project's specific styling
   const LoaderContent = (
     <div className="py-20 flex flex-col items-center justify-center space-y-4">
-      {/* Spinning ring for extra visual polish */}
       <div className="w-6 h-6 border-t-2 border-icy-blue rounded-full animate-spin"></div>
 
       <span className="text-icy-blue animate-pulse font-bold text-[10px] uppercase tracking-[0.3em]">
