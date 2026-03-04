@@ -1,73 +1,74 @@
-# React + TypeScript + Vite
+# 🏎️ OxiCar Competition - Sistema de Gestión Integral (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **Plataforma de Gestión Operativa & Dashboard Financiero** - Interfaz moderna diseñada para la transformación digital de **OxiCar Competition**. Una solución SPA (Single Page Application) robusta que centraliza la administración de clientes, vehículos, inventario y servicios mecánicos con una experiencia de usuario fluida y reactiva.
 
-Currently, two official plugins are available:
+## 🎯 Propuesta de Valor
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Este sistema reemplaza los flujos de trabajo manuales y en papel, ofreciendo una "Torre de Control" digital que permite:
 
-## React Compiler
+* 📊 **Inteligencia de Negocio:** Dashboards en tiempo real con métricas financieras y operativas.
+* 🔍 **Trazabilidad Total (Auditoría):** Sistema avanzado de logs que registra quién, cuándo y qué cambió en el sistema, con visualización de diferencias (*Old Value vs. New Value*).
+* 🛠️ **Gestión de Taller:** Ciclo de vida completo de órdenes de servicio.
+* 📦 **Inventario Inteligente:** Control de stock con alertas visuales automáticas para insumos críticos.
+* 🛡️ **Seguridad y Roles:** Control de acceso basado en roles (Admin/Empleado) con manejo seguro de sesiones.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🏗️ Arquitectura Técnica
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+El proyecto sigue una arquitectura modular y escalable, priorizando la **seguridad de tipos** y la **reutilización de componentes**.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🛠 Stack Tecnológico
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* **Core:** React 18 + TypeScript + Vite.
+* **Estilos:** Tailwind CSS.
+* **Estado Global:** **Zustand** (Store ligero y persistente para sesión y UI).
+* **Networking:** Axios con patrón de **Interceptores** (Manejo automático de Tokens y Errores 401/403).
+* **Validaciones:** React Hook Form + Zod.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 🧩 Patrones y Decisiones de Diseño
+
+* Manejo Centralizado de Errores (errorHandler.ts): Implementación de un diccionario técnico que intercepta códigos de estado del servidor y errores de la base de datos MySQL, transformándolos en mensajes claros y amigables para el usuario del taller.
+
+* Seguridad por Capas (Guards & Permission Gate): Uso de Higher-Order Components (HOC) y Guards de navegación para proteger rutas y elementos de la UI basándose en roles de usuario, asegurando que solo el administrador acceda a métricas sensibles.
+
+* Arquitectura de Networking Robusta: Configuración de instancias de Axios con interceptores de respuesta para gestionar automáticamente la expiración de tokens y errores de red, garantizando una sesión segura y sin "estados zombis".
+
+* Gestión de Estado Persistente: Utilización de Zustand con middleware de persistencia, permitiendo que la sesión y las preferencias de la interfaz se mantengan tras recargar la página, mejorando la agilidad operativa.
+
+* Sistema de Auditoría Visual (AuditDetailsModal.tsx): Lógica de comparación de objetos (diffing) para mostrar de forma legible los cambios históricos en el sistema, diferenciando visualmente entre creación, modificación y borrado lógico.
+
+* Control de Flujo Asíncrono (Abort Controller): Implementación de utilidades para cancelar peticiones pendientes cuando un componente se desmonta, evitando fugas de memoria y actualizaciones de estado en componentes inexistentes.
+
+* Sistema de Componentes Reutilizables: Implementación de una arquitectura de componentes atómicos (Table, Toggle, ActionButton, Button) que asegura la consistencia visual en toda la SPA y facilita la escalabilidad del sistema ante nuevos módulos operativos.
+
+---
+
+## 🚀 Instalación y Despliegue
+
+### Pasos para Desarrollo Local
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/facucastellano19/OxiCar-Frontend.git
+cd OxiCar-Frontend
+
+# 2. Instalar dependencias
+npm install
+
+# 3. Configurar variables de entorno (.env)
+VITE_API_BASE_URL=http://localhost:3000/api
+
+# 4. Iniciar servidor de desarrollo
+npm run dev
+
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 👤 Autor y Contacto
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+**Facundo Castellano** - *Full Stack Developer & Técnico Analista de Sistemas*
+
+* [LinkedIn](https://www.linkedin.com/in/facundocastellano/)
+* **Email:** castellanofacundo05@gmail.com
