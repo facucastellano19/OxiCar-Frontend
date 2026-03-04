@@ -27,6 +27,7 @@ export const useUserStore = create<UserState>()(
       resetUser: () => {
         set({ isLogged: false, token: null, userInfo: null });
         localStorage.removeItem("user-storage");
+        localStorage.removeItem("token");
       },
     }),
     {
