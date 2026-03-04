@@ -46,6 +46,11 @@ const FIELD_LABELS: Record<string, string> = {
   role_id: "Rol",
   username: "Usuario",
   client_id: "ID Cliente",
+  paid_at: "Fecha de Pago",
+  started_at: "Fecha de Inicio",
+  completed_at: "Fecha de Finalización",
+  canceled_at: "Fecha de Cancelación",
+  payment_cancelled_at: "Fecha de Cancelación de Pago",
   email: "Email",
   client_name: "Nombre del Cliente",
   vehicle_details: "Vehículo / Patente",
@@ -68,6 +73,7 @@ const VALUE_MAPS: Record<string, Record<number | string, string>> = {
 };
 
 const BLACKLIST = [
+  "started_at",
   "created_at",
   "updated_at",
   "updated_by",
@@ -224,7 +230,7 @@ export const AuditDetailsModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-jet-black/98 backdrop-blur-xl animate-fade-in font-sans text-left">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-[2px] animate-in fade-in duration-300 font-sans text-left">
       <div className="bg-jet-black border border-white/10 w-full max-w-xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
         {/* HEADER */}
         <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
@@ -343,7 +349,6 @@ export const AuditDetailsModal = ({
         <div className="p-5 bg-white/[0.01] border-t border-white/5 flex justify-between items-center px-8 text-[7px] text-pale-slate/20 font-mono tracking-widest uppercase italic">
           <div className="flex gap-4">
             <span>IP: {ip_address}</span>
-            <span>Trace: {id}</span>
           </div>
           <button
             onClick={onClose}

@@ -52,14 +52,16 @@ export const SaleDetailsModal = ({ sale, onClose }: Props) => {
           </span>
         </div>
 
-        <div className="bg-white/[0.02] p-4 rounded-xl border border-white/5 flex flex-col gap-1">
-          <span className="text-[10px] font-black text-lavender/40 uppercase tracking-widest">
-            Fecha de Registro
-          </span>
-          <span className="text-sm font-medium text-pale-slate">
-            {formatTraceDate(sale.created_at)}
-          </span>
-        </div>
+        {isProductSale && (
+          <div className="bg-white/[0.02] p-4 rounded-xl border border-white/5 flex flex-col gap-1 animate-in fade-in duration-300">
+            <span className="text-[10px] font-black text-lavender/40 uppercase tracking-widest">
+              Fecha de Registro
+            </span>
+            <span className="text-sm font-medium text-pale-slate">
+              {formatTraceDate(sale.created_at)}
+            </span>
+          </div>
+        )}
       </div>
 
       {!isProductSale && (
@@ -147,7 +149,7 @@ export const SaleDetailsModal = ({ sale, onClose }: Props) => {
 
         <div className="grid grid-cols-1 gap-6">
           {sale.payment_cancelled_at ? (
-            /* CASO 1: CANCELADO O DEVUELTO */
+            /* CASE 1*/
             <div className="flex flex-col gap-1 border-l-2 border-red-500 pl-4 py-2 bg-red-500/5 rounded-r">
               <span className="text-[9px] font-black text-red-500 uppercase italic tracking-wider">
                 Pago Anulado / Devuelto
@@ -160,31 +162,25 @@ export const SaleDetailsModal = ({ sale, onClose }: Props) => {
               </span>
             </div>
           ) : (
-            /* CASO 2: FLUJO NORMAL (Pendiente o Pagado) */
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div
-                className={`flex flex-col gap-1 border-l pl-4 py-1 transition-all ${
-                  sale.paid_at
-                    ? "border-green-500/60"
-                    : "border-white/5 opacity-20"
-                }`}
-              >
-                <span
-                  className={`text-[9px] font-black uppercase italic ${
-                    sale.paid_at ? "text-green-400" : "text-pale-slate"
-                  }`}
-                >
-                  Cobro Confirmado
-                </span>
-                <span className="text-[11px] text-lavender/70 font-mono">
-                  {formatTraceDate(sale.paid_at) || "Pendiente de cobro"}
-                </span>
-              </div>
-
-              {!sale.paid_at && (
-                <div className="flex items-center pl-4 py-1 border-l border-white/5">
-                  <span className="text-[10px] text-pale-slate/40 italic">
-                    Esperando confirmación vía {sale.payment_method}
+            /* CASE 2 */
+            <div className="grid grid-cols-1">
+              {sale.paid_at ? (
+                <div className="flex flex-col gap-1 border-l border-green-500/60 pl-4 py-1">
+                  <span className="text-[9px] font-black text-green-400 uppercase italic">
+                    Cobro Confirmado
+                  </span>
+                  <span className="text-[11px] text-lavender/70 font-mono">
+                    {formatTraceDate(sale.paid_at)}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 border-l border-white/10 pl-4 py-2 bg-white/[0.01] rounded-r">
+                  <div className="w-1.5 h-1.5 rounded-full bg-pale-slate/40 animate-pulse" />
+                  <span className="text-[9px] text-pale-slate/60 font-black uppercase tracking-widest italic">
+                    Pendiente de cobro
+                  </span>
+                  <span className="text-[9px] text-pale-slate/20 uppercase font-mono ml-auto">
+                    vía {sale.payment_method}
                   </span>
                 </div>
               )}
@@ -249,9 +245,9 @@ export const SaleDetailsModal = ({ sale, onClose }: Props) => {
       </div>
 
       {sale.observations && (
-        <div className="bg-white/[0.01] p-4 rounded-xl border border-white/5 border-dashed">
+        <div className="bg-white/[0.01] p-4 rounded-xl border border-white/5 border-dashed animate-in fade-in slide-in-from-bottom-2 duration-300">
           <span className="text-[9px] font-black text-lavender/30 uppercase tracking-widest block mb-2">
-            Notas de Taller
+            {isProductSale ? "Notas de Venta" : "Notas de Taller"}
           </span>
           <p className="text-xs text-pale-slate italic leading-relaxed">
             "{sale.observations}"

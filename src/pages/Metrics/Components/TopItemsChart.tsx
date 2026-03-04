@@ -13,7 +13,7 @@ interface TopItemsChartProps {
   data: any[];
   dataKey: string; // 'product' o 'service'
   valueKey: string; // 'quantity'
-  color: string; // #f59e0b (naranja) o #B0D7FF (azul)
+  color: string; // #f59e0b or #B0D7FF
 }
 
 export const TopItemsChart = ({
@@ -34,7 +34,6 @@ export const TopItemsChart = ({
 
   return (
     <div className="bg-white/[0.03] border border-white/10 p-6 rounded-lg backdrop-blur-sm w-full max-w-[500px] h-[400px] mx-auto xl:mx-0">
-      {/* Header section */}
       <div className="mb-6">
         <h2 className="text-white text-sm font-black uppercase tracking-[0.2em]">
           Top 5 <span style={{ color }}>{title}</span>
@@ -44,37 +43,29 @@ export const TopItemsChart = ({
         </p>
       </div>
 
-      {/* Chart container */}
       <ResponsiveContainer width="100%" height="80%">
         <BarChart
           data={topData}
-          margin={{ top: 10, right: 10, left: -25, bottom: 20 }}
-          barGap={8}
+          layout="vertical"
+          margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
         >
-          {/* Subtle grid lines */}
           <CartesianGrid
             strokeDasharray="3 3"
             stroke="rgba(255,255,255,0.03)"
+            horizontal={true}
             vertical={false}
           />
 
-          <XAxis
-            dataKey={dataKey}
-            stroke="rgba(255,255,255,0.4)"
-            fontSize={9}
-            tickLine={false}
-            axisLine={false}
-            interval={0}
-            angle={0}
-            textAnchor="middle"
-            dy={10}
-          />
+          <XAxis type="number" hide />
 
           <YAxis
-            stroke="rgba(255,255,255,0.2)"
+            dataKey={dataKey}
+            type="category"
+            stroke="rgba(255,255,255,0.6)"
             fontSize={10}
             tickLine={false}
             axisLine={false}
+            width={100}
           />
 
           <Tooltip
@@ -89,7 +80,7 @@ export const TopItemsChart = ({
             formatter={(value: any) => [value, "Cantidad"]}
           />
 
-          <Bar dataKey={valueKey} radius={[4, 4, 0, 0]} barSize={35} />
+          <Bar dataKey={valueKey} radius={[0, 4, 4, 0]} barSize={20} />
         </BarChart>
       </ResponsiveContainer>
     </div>

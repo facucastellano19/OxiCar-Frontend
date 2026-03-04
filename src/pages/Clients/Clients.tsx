@@ -129,7 +129,7 @@ export const Clients = () => {
         </Button>
       </div>
 
-      <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden shadow-2xl">
+      <div className="bg-white/[0.02] border border-white/5 rounded-xl shadow-2xl">
         {/* SEARCH BAR */}
         <div className="p-4 border-b border-white/5 bg-white/[0.01]">
           <div className="relative w-full md:w-80">
@@ -208,10 +208,6 @@ export const Clients = () => {
                         label="Ver Historial"
                         onClick={() => handleViewHistory(client)}
                       />
-
-                      <span className="tooltip-text uppercase">
-                        Ver Historial
-                      </span>
                     </div>
                     <div className="tooltip-container group/tip">
                       <ActionButton
@@ -219,9 +215,6 @@ export const Clients = () => {
                         label="Editar Cliente"
                         onClick={() => handleEditClick(client)}
                       />
-                      <span className="tooltip-text uppercase">
-                        Editar Cliente
-                      </span>
                     </div>
                   </div>
                 </td>
