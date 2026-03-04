@@ -10,6 +10,7 @@ import { ServiceForm, CategoriesForm } from "./Components";
 import { toast } from "sonner";
 import { handleBackendError } from "../../utilities";
 import {
+  ActionButton,
   Button,
   ConfirmModal,
   Pagination,
@@ -308,26 +309,27 @@ export const Services = () => {
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
                         {showInactive ? (
-                          <Button
+                          <ActionButton
+                            icon={RotateCcw}
+                            label="Restaurar Servicio"
                             onClick={() => handleRestore(service.id)}
-                            className="p-2 bg-transparent border-none shadow-none text-icy-blue hover:bg-icy-blue/10"
-                          >
-                            <RotateCcw size={16} />
-                          </Button>
+                            hoverColor="text-icy-blue hover:bg-icy-blue/10"
+                          />
                         ) : (
                           <>
-                            <Button
+                            <ActionButton
+                              icon={Edit2}
+                              label="Editar Servicio"
                               onClick={() => handleEdit(service)}
-                              className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-icy-blue hover:bg-white/5"
-                            >
-                              <Edit2 size={16} />
-                            </Button>
-                            <Button
+                              hoverColor="hover:text-icy-blue hover:bg-white/5"
+                            />
+
+                            <ActionButton
+                              icon={Trash2}
+                              label="Eliminar Servicio"
                               onClick={() => openDeleteConfirm(service.id)}
-                              className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-red-500 hover:bg-red-500/10"
-                            >
-                              <Trash2 size={16} />
-                            </Button>
+                              hoverColor="hover:text-red-500 hover:bg-red-500/10"
+                            />
                           </>
                         )}
                       </div>
@@ -351,26 +353,26 @@ export const Services = () => {
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
                         {showInactive ? (
-                          <Button
+                          <ActionButton
+                            icon={RotateCcw}
+                            label="Restaurar Categoría"
                             onClick={() => handleRestore(category.id)}
-                            className="p-2 bg-transparent border-none shadow-none text-icy-blue hover:bg-icy-blue/10"
-                          >
-                            <RotateCcw size={16} />
-                          </Button>
+                            hoverColor="text-icy-blue hover:bg-icy-blue/10"
+                          />
                         ) : (
                           <>
-                            <Button
+                            <ActionButton
+                              icon={Edit2}
+                              label="Editar Categoría"
                               onClick={() => handleEditCategory(category)}
-                              className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-icy-blue hover:bg-white/5"
-                            >
-                              <Edit2 size={16} />
-                            </Button>
-                            <Button
+                              hoverColor="hover:text-icy-blue hover:bg-white/5"
+                            />
+                            <ActionButton
+                              icon={Trash2}
+                              label="Eliminar Categoría"
                               onClick={() => openDeleteConfirm(category.id)}
-                              className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-red-500 hover:bg-red-500/10"
-                            >
-                              <Trash2 size={16} />
-                            </Button>
+                              hoverColor="hover:text-red-500 hover:bg-red-500/10"
+                            />
                           </>
                         )}
                       </div>

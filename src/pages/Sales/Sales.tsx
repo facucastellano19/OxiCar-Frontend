@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { Plus, Search, Wrench, Eye, RotateCcw, DollarSign } from "lucide-react";
 import {
-  Plus,
-  Search,
-  Wrench,
-  Eye,
-  RotateCcw,
-  DollarSign,
-} from "lucide-react";
-import { Button, Table, Toggle, Pagination } from "../../components/";
+  Button,
+  Table,
+  Toggle,
+  Pagination,
+  ActionButton,
+} from "../../components/";
 import { useApi } from "../../hooks";
 import { salesService } from "../../services/";
 import { type Sale } from "../../models/sales.model";
@@ -137,10 +136,8 @@ export const Sales = () => {
     return rawData.slice(start, start + itemsPerPage);
   }, [rawData, currentPage, itemsPerPage]);
 
-  // Helpers para deshabilitar botones
   const isPaymentModifiable = (status: string) => {
     const s = status?.toLowerCase() || "";
-    // Si está pagado o cancelado, no se puede modificar
     return !(
       s.includes("pagado") ||
       s.includes("completado") ||
@@ -361,31 +358,37 @@ export const Sales = () => {
                 {sale.payment_method}
               </td>
               <td className="px-6 py-4">
-                <span
-                  className={`text-[9px] font-black px-2 py-0.5 rounded border ${
-                    sale.payment_status === "Pagado" ||
-                    sale.payment_status === "Completado"
-                      ? "bg-green-500/10 text-green-400 border-green-500/20"
-                      : sale.payment_status === "Cancelado"
-                        ? "bg-red-500/10 text-red-400 border-red-500/20"
-                        : "bg-orange-500/10 text-orange-400 border-orange-500/20"
-                  }`}
-                >
-                  {" "}
-                  {sale.payment_status}{" "}
-                </span>
+                <div className="flex items-center gap-2.5">
+                  {/* Punto con color sólido y glow sutil */}
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full shadow-[0_0_6px] ${
+                      sale.payment_status === "Pagado" ||
+                      sale.payment_status === "Completado"
+                        ? "bg-green-500 shadow-green-500/50"
+                        : sale.payment_status === "Cancelado"
+                          ? "bg-red-500 shadow-red-500/50"
+                          : "bg-amber-500 shadow-amber-500/50"
+                    }`}
+                  />
+                  <span className="text-[10px] font-black text-lavender/80 uppercase tracking-tight italic">
+                    {sale.payment_status}
+                  </span>
+                </div>
               </td>
               {view === "services" && (
                 <td className="px-6 py-4">
                   <span
-                    className={`text-[9px] font-black px-2 py-0.5 rounded border ${
+                    className={`text-[9px] font-black px-2.5 py-0.5 rounded border uppercase tracking-tighter italic transition-all ${
                       sale.service_status === "Completado"
-                        ? "bg-icy-blue/10 text-icy-blue border-icy-blue/20"
-                        : "bg-white/5 text-pale-slate border-white/10"
+                        ? "border-icy-blue text-icy-blue bg-icy-blue/5"
+                        : sale.service_status === "En Progreso"
+                          ? "border-blue-500 text-blue-400 bg-blue-500/5"
+                          : sale.service_status === "Cancelado"
+                            ? "border-red-500 text-red-500 bg-red-500/5"
+                            : "border-amber-500/40 text-amber-500 bg-amber-500/5"
                     }`}
                   >
-                    {" "}
-                    {sale.service_status}{" "}
+                    {sale.service_status}
                   </span>
                 </td>
               )}
@@ -397,29 +400,29 @@ export const Sales = () => {
               </td>
               <td className="px-6 py-4 text-right pr-6">
                 <div className="flex justify-end gap-1">
-                  <Button
+                  <ActionButton
+                    icon={Eye}
+                    label="Ver Detalles"
                     onClick={() => handleViewDetails(sale)}
-                    className="p-2 bg-transparent border-none text-pale-slate hover:text-white hover:bg-white/5 shadow-none transition-all"
-                  >
-                    <Eye size={16} />
-                  </Button>
+                    hoverColor="hover:text-white hover:bg-white/5"
+                  />
 
-                  <Button
+                  <ActionButton
+                    icon={DollarSign}
+                    label="Gestionar Pago"
                     onClick={() => handlePaymentClick(sale)}
                     disabled={!isPaymentModifiable(sale.payment_status)}
-                    className="p-2 bg-transparent border-none text-pale-slate hover:text-green-400 hover:bg-green-500/10 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-pale-slate shadow-none transition-all"
-                  >
-                    <DollarSign size={16} />
-                  </Button>
+                    hoverColor="hover:text-green-400 hover:bg-green-500/10"
+                  />
 
                   {view === "services" && (
-                    <Button
+                    <ActionButton
+                      icon={Wrench}
+                      label="Gestionar servicio"
                       onClick={() => handleServiceStatusClick(sale)}
                       disabled={!isServiceModifiable(sale.service_status || "")}
-                      className="p-2 bg-transparent border-none text-pale-slate hover:text-icy-blue hover:bg-icy-blue/10 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-pale-slate shadow-none transition-all"
-                    >
-                      <Wrench size={16} />
-                    </Button>
+                      hoverColor="hover:text-icy-blue hover:bg-icy-blue/10"
+                    />
                   )}
                 </div>
               </td>

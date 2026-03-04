@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { auditService } from "../../services";
 import { type AuditLog, type AuditSearchParams } from "../../models";
-import { Table, type TableColumn, Button } from "../../components";
+import { Table, type TableColumn, Button, ActionButton } from "../../components";
 import { toast } from "sonner";
 import {
   Search,
@@ -108,14 +108,14 @@ export const Auditory = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 animate-fade-in max-w-[1600px] mx-auto">
+    <div className="space-y-6 animate-fade-in max-w-[1600px] mx-auto">
       <div className="flex flex-col">
         <h1 className="text-2xl font-bold text-lavender uppercase italic font-black">
           Auditoría
         </h1>
         <div className="h-1 w-12 bg-icy-blue mt-2"></div>
         <p className="text-pale-slate/40 text-[10px] uppercase tracking-[0.3em] mt-4 font-bold">
-          Trazabilidad de NcDetailing
+          Trazabilidad de OxiCar Competition
         </p>
       </div>
 
@@ -261,12 +261,13 @@ export const Auditory = () => {
                 {new Date(log.created_at).toLocaleString()}
               </td>
               <td className="px-6 py-4 text-right">
-                <button
+                <ActionButton
+                  icon={Terminal}
+                  label="Ver Logs"
                   onClick={() => setSelectedLog(log)}
-                  className="p-2 text-icy-blue/40 hover:text-icy-blue hover:bg-icy-blue/10 rounded-lg transition-all"
-                >
-                  <Terminal size={14} />
-                </button>
+                  hoverColor="text-icy-blue hover:bg-icy-blue/10"
+                  iconSize={14}
+                />
               </td>
             </tr>
           ))}

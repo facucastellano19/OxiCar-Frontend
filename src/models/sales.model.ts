@@ -21,6 +21,11 @@ export interface Sale {
   service_status?: string;
   observations: string;
   created_at: string;
+  completed_at: string;
+  cancelled_at: string;
+  started_at: string;
+  payment_cancelled_at: string;
+  paid_at: string;
   products?: SaleProduct[];
   services?: SaleServiceItem[];
   vehicle?: {

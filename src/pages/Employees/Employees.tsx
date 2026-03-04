@@ -9,6 +9,7 @@ import { EmployeeForm } from "./Components/EmployeeForm";
 import { toast } from "sonner";
 import { handleBackendError } from "../../utilities";
 import {
+  ActionButton,
   Button,
   ConfirmModal,
   Pagination,
@@ -191,37 +192,27 @@ export const Employees = () => {
               <td className="px-6 py-4 text-right">
                 <div className="flex justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
                   {showInactive ? (
-                    <div className="tooltip-container group/tip">
-                      <Button
-                        onClick={() => handleRestore(employee.id)}
-                        className="p-2 bg-transparent border-none shadow-none text-icy-blue hover:bg-icy-blue/10"
-                      >
-                        <RotateCcw size={16} />
-                      </Button>
-                      <span className="tooltip-text uppercase">Reactivar</span>
-                    </div>
+                    <ActionButton
+                      icon={RotateCcw}
+                      label="Reactivar empleado"
+                      onClick={() => handleRestore(employee.id)}
+                      hoverColor="text-icy-blue hover:bg-icy-blue/10"
+                    />
                   ) : (
                     <>
-                      <div className="tooltip-container group/tip">
-                        <Button
-                          onClick={() => handleEdit(employee)}
-                          className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-icy-blue hover:bg-white/5"
-                        >
-                          <Edit2 size={16} />
-                        </Button>
-                        <span className="tooltip-text uppercase">Editar</span>
-                      </div>
-                      <div className="tooltip-container group/tip">
-                        <Button
-                          onClick={() => openDeleteConfirm(employee.id)}
-                          className="p-2 bg-transparent border-none shadow-none text-pale-slate hover:text-red-500 hover:bg-red-500/10"
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                        <span className="tooltip-text uppercase">
-                          Desactivar
-                        </span>
-                      </div>
+                      <ActionButton
+                        icon={Edit2}
+                        label="Editar empleado"
+                        onClick={() => handleEdit(employee)}
+                        hoverColor="hover:text-icy-blue hover:bg-white/5"
+                      />
+
+                      <ActionButton
+                        icon={Trash2}
+                        label="Eliminar empleado"
+                        onClick={() => openDeleteConfirm(employee.id)}
+                        hoverColor="hover:text-red-500 hover:bg-red-500/10"
+                      />
                     </>
                   )}
                 </div>
