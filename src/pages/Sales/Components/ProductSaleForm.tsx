@@ -189,7 +189,6 @@ export const ProductSaleForm = ({ onCancel, onSubmit }: Props) => {
     onSubmit(payload);
   };
 
-  // --- Optimizations ---
   const filteredClients = useMemo(() => {
     const lowerSearch = clientSearch.toLowerCase();
     return clients.filter((c) =>

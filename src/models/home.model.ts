@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// 1. Schema for Recent Services
 export const RecentServiceSchema = z.object({
   sale_id: z.number(),
   client_name: z.string(),
@@ -10,7 +9,6 @@ export const RecentServiceSchema = z.object({
   services: z.string(),
 });
 
-// 2. Schema for Recent Products
 export const RecentProductSchema = z.object({
   sale_id: z.number(),
   client_name: z.string(),
@@ -25,7 +23,6 @@ export const RecentProductSchema = z.object({
   })),
 });
 
-// 3. Main Home Dashboard Schema
 export const HomeDashboardResponseSchema = z.object({
   summary: z.object({
     totalSales: z.number(),
@@ -38,7 +35,6 @@ export const HomeDashboardResponseSchema = z.object({
   }),
 });
 
-// Types extracted from schemas
 export type RecentService = z.infer<typeof RecentServiceSchema>;
 export type RecentProduct = z.infer<typeof RecentProductSchema>;
 export type HomeDashboardResponse = z.infer<typeof HomeDashboardResponseSchema>;

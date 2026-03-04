@@ -43,7 +43,7 @@ export const Clients = () => {
       const actualClients = response.data;
       setClients(Array.isArray(actualClients) ? actualClients : []);
     } catch (error) {
-      console.error("Error fetching clients", error);
+      toast.error("No se pudieron cargar los clientes");
       setClients([]);
     } finally {
       setIsLoading(false);

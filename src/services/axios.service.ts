@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useUserStore } from "../store";
+import { toast } from "sonner";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -30,7 +31,7 @@ privateAxios.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch (error) {
-      console.error("Axios Interceptor: Error parsing token", error);
+      toast.error("Error al cargar la información de autenticación");
     }
   }
 

@@ -51,7 +51,6 @@ export const Metrics = () => {
     } catch (error) {
       setMetrics(null);
       toast.error("No se pudieron cargar las métricas");
-      console.error("Metrics synchronization failed:", error);
     }
   };
 

@@ -45,7 +45,7 @@ export const EmployeeForm = ({
         name: initialData.name,
         username: initialData.username,
         email: initialData.email,
-        password: "", // Password siempre vacío al editar
+        password: "", 
       });
     }
   }, [initialData, reset]);

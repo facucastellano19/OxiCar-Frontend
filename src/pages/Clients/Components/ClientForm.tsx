@@ -55,14 +55,9 @@ export const ClientForm = ({
 
   return (
     <form
-      onSubmit={handleSubmit(
-        (data) => {
-          onSubmit(data);
-        },
-        (err) => {
-          console.log("Zod bloqueó el envío por estos errores:", err);
-        },
-      )}
+      onSubmit={handleSubmit((data) => {
+        onSubmit(data);
+      })}
       className="space-y-6"
     >
       {/* CLIENT PERSONAL INFORMATION SECTION */}

@@ -11,7 +11,6 @@ import { useApi } from "../../hooks";
 import { salesService } from "../../services/";
 import { type Sale } from "../../models/sales.model";
 import { ProductSaleForm } from "./Components/ProductSaleForm";
-//import { ServiceSaleForm } from "./Components/ServiceSaleForm";
 import { toast } from "sonner";
 import { handleBackendError } from "../../utilities";
 import { ServiceSaleForm } from "./Components/ServiceSaleForm";
@@ -81,7 +80,6 @@ export const Sales = () => {
     loadData();
   }, [loadData]);
 
-  // --- Unified save logic ---
   const handleProductSubmit = useCallback(
     async (data: any) => {
       try {
