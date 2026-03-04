@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useUserStore } from "../store";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -35,3 +36,16 @@ privateAxios.interceptors.request.use((config) => {
 
   return config;
 });
+
+privateAxios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 || error.code === "ERR_NETWORK") {
+      useUserStore.getState().resetUser();
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  },
+);

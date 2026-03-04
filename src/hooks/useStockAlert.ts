@@ -6,19 +6,22 @@ export const useStockAlert = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-const fetchStock = useCallback(async () => {
-  try {
-    const response = await productsService.getAll(undefined, "active", undefined); 
-    if (response?.data) {
-      console.log("Datos frescos recibidos:", response.data.filter(p => p.lowStock).length);
-      setProducts([...response.data]); 
+  const fetchStock = useCallback(async () => {
+    try {
+      const response = await productsService.getAll(
+        undefined,
+        "active",
+        undefined,
+      );
+      if (response?.data) {
+        setProducts([...response.data]);
+      }
+    } catch (error) {
+      console.error("Sync Error:", error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Sync Error:", error);
-  } finally {
-    setLoading(false);
-  }
-}, []);
+  }, []);
 
   useEffect(() => {
     fetchStock();
