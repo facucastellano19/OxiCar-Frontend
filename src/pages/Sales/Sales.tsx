@@ -282,7 +282,7 @@ export const Sales = () => {
             >
               <option value="">Estado Pago (Todos)</option>
               <option value="1">Pendiente</option>
-              <option value="2">Completado</option>
+              <option value="2">Pagado</option>
               <option value="3">Cancelado</option>
             </select>
             {view === "services" && (

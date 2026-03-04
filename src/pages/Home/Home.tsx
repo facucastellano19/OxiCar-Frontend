@@ -49,7 +49,7 @@ export const Home = () => {
       {/* 2. SUMMARY KPIs WITH NEW ICONS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <KPICard
-          title="Ventas activas"
+          title="Ventas Totales"
           value={data.summary.totalSales}
           icon={<DollarSign size={20} className="text-icy-blue" />}
         />
